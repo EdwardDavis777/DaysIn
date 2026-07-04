@@ -1,0 +1,94 @@
+#pragma once
+
+
+/*
+      Defines class defaults for item run-time instances; each item that implements some sort of logic at 
+	  run-time will have a derived instance from this class.
+*/
+
+
+ 
+//Other imports.
+#include "SharedData/Interaction/ItemEquipTag.h" 
+
+//Engine imports.
+#include "CoreMinimal.h" 
+#include "UObject/NoExportTypes.h" 
+#include "ItemInstance.generated.h"
+ 
+
+
+//Forward declares.
+class UItemDataAsset;
+class UUIDraggableBase;
+class AItemBase;
+
+
+UCLASS()
+class DAYSIN_API UItemInstance : public UObject
+{
+	GENERATED_BODY()
+public:
+
+	/*
+	      Initializes the current item instance with class defaults
+		  for run-time events when called.
+
+		  @param WorldContext: pointer to the current world 
+		  context.
+
+		  @param ItemData: pointer to the assocaited items static
+		  data.
+	*/
+	virtual void Initialize(UWorld* WorldContext, UItemDataAsset* ItemData);
+
+
+
+	/*
+	                                  Accessors.
+	*/
+	TObjectPtr<UItemDataAsset>& GetStaticItemData();
+	const FIntPoint GetItemSize() const;
+	const FText GetUIName() const;
+	const EEquipTag GetEquipTag() const;
+	const TSubclassOf<AItemBase>& GetItemClass() const;	
+	UTexture2D* GetItemIcon();
+	TSubclassOf<UUIDraggableBase>& GetIconClass();
+
+protected:
+
+	/*
+							   UItemInstance components.
+	*/
+    UPROPERTY()
+	TObjectPtr<UItemDataAsset> StaticItemData;
+
+    UPROPERTY()
+	TObjectPtr<UWorld> World;
+
+
+	/*
+								  Template accessors.
+    */
+
+
+   /*
+		Gets an items data asset with the type passed by the caller.
+
+		@tparam UItemDataAsset: must be type UItemDataAsset or the compiler will
+		scream at you!!
+
+		@return UItemDataAsset: returns an item data asset pointer with the class type
+		provieded by the caller, if the item instance is assocaited with that type of
+		data asset during its construction.
+   */
+	template<typename TAsset>
+	TAsset* GetData()
+	{
+		if (!StaticItemData) return nullptr;
+
+		static_assert(TIsDerivedFrom<TAsset, UItemDataAsset>::IsDerived, "T must be type UDataAsset");
+		TAsset* Asset = CastChecked<TAsset>(StaticItemData);
+		return Asset;
+	}
+};
