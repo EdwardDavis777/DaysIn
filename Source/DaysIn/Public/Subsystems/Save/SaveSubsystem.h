@@ -23,6 +23,7 @@
 
 //Forward declares.
 class USaveGame;
+class UPlayerUISubsystem;
 
 
 
@@ -36,16 +37,35 @@ protected:
 	virtual void Deinitialize() override;
 
 
+
 	/*
-	                                  Components.
+	                                   Components.
 	*/
 	UPROPERTY()
 	TObjectPtr<USaveManagerSubsystem> SaveManager;
 
+	UPROPERTY()
+	TObjectPtr<UPlayerUISubsystem> PlayerUISubsystem;
+
+    
+
+	/*
+	                               Load event functions.
+	*/
+
+	/*
+	     Loads a save at begin play when called. Note the save class that 
+		 is passed must be managed by the save manager subsystem
+		 or the load will fail.
+
+		 @param SaveClass: pointer to the save class you wish 
+		 to load.
+	*/
+	void LoadSaveAtBegin(USaveGame* SaveClass);
 
 
 	/*
-	                                Class Generics.
+	                                  Class Generics.
 	*/
 
 	/*

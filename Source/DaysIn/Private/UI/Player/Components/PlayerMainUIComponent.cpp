@@ -59,7 +59,7 @@ void UPlayerMainUIComponent::BindDelegates()
 
 
 void UPlayerMainUIComponent::UpdateUISubsystem()
-{
+{ 
 	if (!PlayerMain || !PlayerMain->GetPlayerEquipmentMain() || !PlayerUISubsystem) return;
 	
 	PlayerUISubsystem->SetPlayerMain(PlayerMain);

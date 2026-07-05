@@ -65,3 +65,13 @@ void USaveManagerSubsystem::Load()
 		Save.Value->Load(GetWorld());
 	}
 }
+
+void USaveManagerSubsystem::Load(USaveGame* SaveClass,UWorld* WorldContext)
+{
+	if (!SaveClass || !WorldContext) return;
+
+	if (TScriptInterface<ISaveInterface>* SaveInterface = SaveClasses.Find(SaveClass))
+	{
+		SaveInterface->GetInterface()->Load(WorldContext);
+	}
+}

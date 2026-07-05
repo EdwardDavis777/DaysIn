@@ -67,4 +67,17 @@ public:
 		 classes.
 	*/
 	void Load();
+
+	
+	/*
+	     Loads a preferred save class; the class must be currently managed
+		 by the save manager subsystem, or the load will simply fail.
+
+		 @param SaveClass: pointer to the class you wish to 
+		 load.
+
+		 @param WorldContext: pointer to the current world
+		 context.
+	*/
+	void Load(USaveGame* SaveClass,UWorld* WorldContext);
 };

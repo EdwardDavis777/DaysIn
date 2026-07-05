@@ -9,8 +9,10 @@
 //Engine imports.
 #include "CoreMinimal.h"
  
+
 //Forward declares.
 class UItemInstance;
+
 
 
 /*
@@ -34,6 +36,19 @@ DECLARE_MULTICAST_DELEGATE(FUIMainOutRenderSignature);
 
 
 /*
+    Dispatches when the players UI main widget is initialized
+    with the UI player main subsytem.
+*/
+DECLARE_MULTICAST_DELEGATE(FUIMainInitializedSignature);
+
+/*
+    Dispatches when the players UI equipment widget is initialized
+    with the UI player main subsytem.
+*/
+DECLARE_MULTICAST_DELEGATE(FUIEquipmentMainInitializedSignature); 
+
+
+/*
     Dispatches to the UI main widget to force spawn an 
     item through some passed instance.
 
@@ -49,5 +64,7 @@ struct FPlayerUISubsystemDelegates
     FToggleUIMainSignature ToggleUIMain;
     FUIMainInRenderSignature UIMainInRender;
     FUIMainOutRenderSignature UIMainOutRender;
-    FForceSpawnActorSignature ForceSpawnActor;
+    FUIMainInitializedSignature UIMainInitialized;
+    FUIEquipmentMainInitializedSignature UIEquipmentMainInitialized;
+    FForceSpawnActorSignature ForceSpawnActor; 
 };

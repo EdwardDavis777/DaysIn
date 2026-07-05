@@ -49,4 +49,4 @@ void ACollectableStorageBase::Drop(UItemInstance* Instance)
 		CollectableStorageInstance = StorageInst;
 		ItemPhysicsComponent->ApplyCollisionAndPhysicsButIgnorePawn(ItemMesh, CollectableStorageDataAsset->ItemPhysicsProperties);
 	}
-}
+} 

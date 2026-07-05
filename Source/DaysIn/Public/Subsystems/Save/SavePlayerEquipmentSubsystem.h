@@ -31,10 +31,11 @@ private:
    
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
+	void BindDelegates();
 
 
 	/*
-	                             Components.
+	                              Components.
 	*/
 	UPROPERTY()
 	TObjectPtr<USavePlayerEquipment> SavePlayerEquipment;
@@ -48,4 +49,15 @@ public:
 	*/
 	void SaveEquipment(UItemInstance* Instance);
 	void UnSaveEquipment(UItemInstance* Instance);
+
+	
+	/*
+	                        Load event functions.
+	*/
+
+	/*
+	     Loads this subsystems save class data when the 
+		 game starts.
+	*/
+	void LoadOnStart();
 };

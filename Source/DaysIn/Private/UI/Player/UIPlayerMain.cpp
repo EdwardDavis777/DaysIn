@@ -7,7 +7,7 @@
 
 //Custom component imports.
 #include "UI/Player/Components/PlayerMainUIComponent.h"
-#include "UI/Player/Components/PlayerUIRegionComponent.h"
+#include "UI/Player/Components/PlayerUIRegionComponent.h" 
 #include "CustomClasses/Components/Factory/NativeUITemplate.h"
 
 
