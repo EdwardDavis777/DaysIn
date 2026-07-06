@@ -15,6 +15,8 @@
 class AItemBase;
 class ASurvivor; 
 class UUIPlayerEquipmentMain;
+class UCollectableStorageInstance;
+
 
 
 
@@ -55,4 +57,18 @@ namespace Interact
          if no slot can store it.
     */
     bool bStoreInSlot(UUIPlayerEquipmentMain* EquipmentMain, AItemBase* Item);
+
+
+
+    /*
+          Parses all external player storages and stores the item inside of the first
+          storage instance that can hold the item.
+
+          @param Storages: array of all external player 
+          storages.
+
+          @param Item: pointer to the item you wish to
+          store.
+    */
+    void StoreInExternalStorage(const TArray<TObjectPtr<UCollectableStorageInstance>>& Storages,AItemBase* Item);
 }

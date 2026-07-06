@@ -9,7 +9,7 @@
 
  
 //Other imports.
-#include "SharedData/Interaction/ItemEquipTag.h"
+#include "SharedData/Interaction/ItemEquipTag.h" 
 #include "UI/Player/Data/UIEquipSlotData.h"
 
 
@@ -25,7 +25,7 @@
 class UTextBlock;
 class UEquipSlotUIComponent;
 class UUIItemIconBase;
-
+class UPlayerEquipmentSubsystem;
 
 
 
@@ -50,7 +50,6 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UUIItemIconBase> ItemIcon;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data|Configurations")
 	EEquipTag EquipTag;
 
@@ -61,6 +60,13 @@ protected:
 	*/
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UEquipSlotUIComponent> EquipSlotUIComponent;
+
+
+	/*
+	                                 Cache components.
+	*/
+	UPROPERTY()
+	TObjectPtr<UPlayerEquipmentSubsystem> PlayerEquipmentSubsystem;
 
 
 
@@ -103,7 +109,7 @@ public:
 	/*
 	                                Virtual event functions.
 	*/
-	virtual void StoreItem(AItemBase* Item) override;
+	virtual void StoreItem(AItemBase* Item, const FIntPoint& Position = FIntPoint(0,0)) override;
 	virtual bool StoreDropped(UItemInstance* ItemInstance) override;
 	virtual void RemoveStored(TObjectPtr<UItemInstance>& AssocaitedInstance) override;
 	

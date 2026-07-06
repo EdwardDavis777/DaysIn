@@ -7,7 +7,7 @@
 	 implemented into them for item instances etc.
 
 	 All widgets that implement really any sort of dropping logic
-	 are derived from this class, such as inventory grids, equipment
+	 are derived from this class, such as inventory grids, equipment 
 	 slots, storages etc. 
 
 */ 
@@ -143,11 +143,28 @@ public:
 
 	    @param Item: pointer to a raw item pickedup
 	    from the world.
-    */
-	virtual void StoreItem(AItemBase* Item);
 
+		@param Position: refrence to the 2D position 
+		to store the item at. Defaulted to zero for 
+		droppables that do not implement dynamic positioning.
+    */
+	virtual void StoreItem(AItemBase* Item,const FIntPoint& Position = FIntPoint(0,0));
 
 	
+	/*
+	     Handles the constructin of a draggable widget through an item instance
+		 pointer.
+
+		@param Instance: pointer to an item instance pickedup
+		from the world.
+
+		@param Position: refrence to the 2D position
+		to store the item at. Defaulted to zero for
+		droppables that do not implement dynamic positioning.
+	*/
+	virtual void StoreItem(UItemInstance* Instance, const FIntPoint& Position = FIntPoint(0, 0));
+
+
 
 
 	/*
@@ -223,5 +240,6 @@ public:
 	*/
 	UBorder* GetBorder() const;
 	USizeBox* GetSizeBox() const;
+	UCanvasPanel* GetGroupPanel() const;
 	const bool bIsVisible() const;
 };

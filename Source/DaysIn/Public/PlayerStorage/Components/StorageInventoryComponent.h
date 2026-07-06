@@ -1,0 +1,175 @@
+#pragma once
+
+/*
+
+      Defines inventory gameplay functions/ functions that execute
+	  behavior for the inventorys that belong to collectable storages.
+
+*/
+
+
+
+//Engine imports.
+#include "CoreMinimal.h"
+#include "CustomClasses/Components/GameplayComponent.h"
+#include "StorageInventoryComponent.generated.h"
+
+
+
+//Forward declares.
+class UCollectableStorageInstance;
+class AItemBase;
+
+
+
+UCLASS()
+class DAYSIN_API UStorageInventoryComponent : public UGameplayComponent
+{
+	GENERATED_BODY()
+
+public:
+	virtual void Initialize(UWorld* WorldContext, UObject* OwnerObject) override;
+	
+
+	/*
+	                            Inventory event functions.
+	*/
+
+	/*
+	     Adds an item at the given origin index, note this function
+		 does not provide any safe checks, it will simply force
+		 and item into the inventory, so ensure that you provide
+		 the correct checks, such as calling bCanStore first.
+
+		 @param Instance: pointer to the current item instance
+		 you wish to add.
+
+		 @param Origin: reference to the start index you wish 
+		 to add the instance from.
+	*/
+	void AddItem(UItemInstance* Instance,const int32& Origin);
+
+
+	/*
+	    Checks if the passed item can store it inside of this
+		inventory component.
+
+		@param Item: pointer to the item you wish to
+		store.
+
+		@return TRUE/FALSE: true if the item gets stored, false
+		if the item cannot be stored.
+	*/
+	bool bCanStore(AItemBase* Item);
+
+
+
+	/*
+	     Checks if the given instance can fit inside of the inventory
+		 array cache given a starting index.
+
+		 @param Instance: pointer to the instance you wish 
+		 to store.
+
+		 @param Origin: starting index in the inventory 
+		 array.
+         
+		 @return TRUE/FALSE: true if the instance can fit, false
+		 if the instance cannot.
+	*/
+	bool bCanFit(UItemInstance* Instance, int32 Origin);
+
+
+
+	/*
+	     Checks if the current index is occupied (valid meaning 
+		 not nullptr), will return true if the index returns a valid
+		 pointer, and false if the index is assocaited with a nullptr.
+		 Also checks if the index is within the bounds of the stored items
+		 reserved allocated space.
+
+		 @param Index: reference to the current index you wish 
+		 to check.
+
+		 @return TRUE/FLASE: true if the index is valid, false
+		 if the index is nullptr or out of bounds.
+	*/
+	bool bIsValidIndex(const int32& Index) const;
+
+
+
+	/*
+	     Checks if the passed tile cord is valid, or invalid
+		 meaning inside the inventory bounds, returns true if the tile
+		 is valid, false if the tile is invalid for some reason.
+
+		 @param Tile: reference to the tile you wish to 
+		 check.
+
+		 @return TRUE/FLASE: true if the tile is valid, false if the 
+		 tile is invalid.
+	*/
+	bool bIsValidTile(const FIntPoint& Tile) const;
+
+
+
+	/*
+	                                 Math functions.
+	*/
+	
+
+
+	/*
+	     Converts an array index into a 2D cord and returns the 
+		 cord back to the caller.
+
+		 @param Index: reference to the current index you wish
+		 to convert from.
+
+		 @return FIntPoint(): the index converted to a coord
+		 back to the caller.
+	*/
+	FORCEINLINE FIntPoint IndexToTile(const int32& Index) const
+	{
+		return FIntPoint(Index % Columns, Index / Rows);
+	}
+
+
+
+	/*
+	     Converts a 2D cord into an index and returns the index to 
+		 the caller.
+
+		 @param Tile: reference to the tile you wish to convert
+		 to an index.
+
+		 @return int32(): current index of the passed
+		 tile.
+	*/
+	FORCEINLINE int32 TileToIndex(const FIntPoint& Tile) const
+	{
+		return Tile.X + Tile.Y * Columns;
+	}
+
+private:
+
+	
+	/*
+	                                  Components.  
+	*/
+	UPROPERTY()
+	TObjectPtr<UCollectableStorageInstance> CollectableStorageInstance;
+
+
+    /*
+	                               Cache components.
+	*/
+	UPROPERTY()
+	TArray<TObjectPtr<UItemInstance>> StoredItems;
+
+	UPROPERTY()
+	int32 Columns = int32();
+
+	UPROPERTY()
+	int32 Rows = int32();
+};

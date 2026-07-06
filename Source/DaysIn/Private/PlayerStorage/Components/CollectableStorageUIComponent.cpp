@@ -121,3 +121,13 @@ void UCollectableStorageUIComponent::SetRegionPanelSize(UUIRegionPanel* RegionPa
 		RegionSlot->SetSize(SlotSize);
 	}
 }
+
+
+/*
+										  Accessors.
+*/
+
+UUICollectableStorageInventory* UCollectableStorageUIComponent::GetInventoryWidget()
+{
+	return InventoryWidget.Get();
+}

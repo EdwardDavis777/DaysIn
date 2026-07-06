@@ -37,12 +37,17 @@ protected:
     */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data| Configurations")
     ERegionTag RegionTag;
-
-
 public:
 
+
     /*
-                                 Accessors.
+                              UI event functions.
+    */
+    virtual void RemoveStored(TObjectPtr<UItemInstance>& AssocaitedInstance) override;
+
+
+    /*
+                                  Accessors.
     */
     FORCEINLINE const ERegionTag& GetRegionTag() const { return RegionTag; }
 };

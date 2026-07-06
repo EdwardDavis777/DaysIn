@@ -3,7 +3,7 @@
 /*
 
      Performs checks at run-time to determine how items will be 
-	 stored/collected by the player character.
+	 stored/collected by the player character. 
 
 */
 
@@ -18,6 +18,7 @@
 //Forward declares.
 class UPlayerSubsystem;
 class UPlayerUISubsystem;
+class UPlayerEquipmentSubsystem;
 class AItemBase;
 
 
@@ -42,6 +43,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UPlayerUISubsystem> PlayerUISubsystem;
+
+	UPROPERTY()
+	TObjectPtr<UPlayerEquipmentSubsystem> PlayerEquipmentSubsystem;
 
 
 	/*

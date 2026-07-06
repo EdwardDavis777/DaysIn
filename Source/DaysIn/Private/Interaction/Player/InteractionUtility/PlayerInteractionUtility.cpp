@@ -7,10 +7,12 @@
 
 //Other imports.
 #include "Items/Abstracts/ItemBase.h"
+#include "PlayerStorage/Abstracts/CollectableStorageInstance.h"
+#include "PlayerStorage/Components/StorageInventoryComponent.h"
 #include "Characters/Player/Survivor.h"
 
 #include "UI/Player/UIPlayerEquipmentMain.h"
-#include "UI/Player/UIEquipSlotBase.h"
+#include "UI/Player/UIEquipSlotBase.h" 
 
 
 
@@ -57,5 +59,18 @@ namespace Interact
 			}
 		}
 		return false;
+	}
+
+	void StoreInExternalStorage(const TArray<TObjectPtr<UCollectableStorageInstance>>& Storages, AItemBase* Item)
+	{
+		if (Storages.IsEmpty() || !Item) return;
+
+		for (auto& Storage : Storages)
+		{
+			if (Storage || Storage->GetInventoryComponent())
+			{
+				if (Storage->GetInventoryComponent()->bCanStore(Item)) { return; }
+			}
+		}
 	}
 }

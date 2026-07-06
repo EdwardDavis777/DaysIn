@@ -9,7 +9,7 @@
 #include "Items/Abstracts/ItemInstance.h"
 #include "Items/Abstracts/ItemBase.h" 
 
-
+ 
 //Widget imports.
 #include "UI/Items/Abstracts/UIItemIconBase.h"
 
@@ -19,16 +19,22 @@
 #include "CustomClasses/Components/Factory/NativeUITemplate.h"
 
 
+//Utility imports.
+#include "SubsystemUtilitys/SubsystemUtility.h"
+
 //Subsystem imports.
 #include "Subsystems/Player/PlayerUISubsystem.h"
-
+#include "Subsystems/Player/PlayerEquipmentSubsystem.h"
 
 
 
 void UUIEquipSlotBase::NativeConstruct()
 {
 	Super::NativeConstruct();
+	
 	EquipSlotUIComponent = NativeUITemplate::CreateDefaultUIComponent<UEquipSlotUIComponent>(GetWorld(), this);
+	PlayerEquipmentSubsystem = SubUtility::FindSub<UPlayerEquipmentSubsystem>(GetWorld());
+
 
 	if (MainBorder)
 	{
@@ -43,7 +49,7 @@ void UUIEquipSlotBase::NativeConstruct()
 							         Virtual event functions.
 */
 
-void UUIEquipSlotBase::StoreItem(AItemBase* Item)
+void UUIEquipSlotBase::StoreItem(AItemBase* Item, const FIntPoint& Position)
 {
 	if (!Item) return;
 

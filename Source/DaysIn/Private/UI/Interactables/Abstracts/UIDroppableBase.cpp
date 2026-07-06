@@ -7,7 +7,7 @@
 
 
  
-//Custom component imports. 
+//Custom component imports.  
 #include "UI/Interactables/Components/DroppableUIComponent.h"
 #include "CustomClasses/Components/Factory/NativeUITemplate.h"
 
@@ -71,14 +71,23 @@ void UUIDroppableBase::ProxyRemoveEvent(TObjectPtr<UItemInstance>& AssociatedIns
 									   Virtual event functions.
 */
 
-void UUIDroppableBase::StoreItem(AItemBase* Item)
+void UUIDroppableBase::StoreItem(AItemBase* Item, const FIntPoint& Position)
 {
 	if (!Item) return;
 
 	//Write these to construct a widget from the item instance.
 	//Dynamically later.
-
 }
+
+
+
+void UUIDroppableBase::StoreItem(UItemInstance* Instance, const FIntPoint& Position)
+{
+	if (!Instance || !DroppableComponent) return;
+	DroppableComponent->HandleStore(Instance, Data.StoredDragWidgets, Position, this);
+}
+
+
 
 bool UUIDroppableBase::StoreDropped(UItemInstance* ItemInstance)
 {
@@ -174,6 +183,11 @@ UBorder* UUIDroppableBase::GetBorder() const
 USizeBox* UUIDroppableBase::GetSizeBox() const
 {
 	return RootSizeBox.Get();
+}
+
+UCanvasPanel* UUIDroppableBase::GetGroupPanel() const
+{
+	return GroupPanel.Get();
 }
 
 const bool UUIDroppableBase::bIsVisible() const

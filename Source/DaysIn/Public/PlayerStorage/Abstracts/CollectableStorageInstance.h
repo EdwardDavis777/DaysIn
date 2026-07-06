@@ -18,6 +18,8 @@ class UItemDataAsset;
 class UCollectableStorageDataAsset;
 class UCollectableStorageUIComponent;
 class UUICollectableStorageInventory;
+class UStorageInventoryComponent;
+
 
 
 
@@ -36,8 +38,12 @@ public:
 	*/
 	TObjectPtr<UCollectableStorageDataAsset>& GetStaticStorageData();
 	TObjectPtr<UCollectableStorageUIComponent>& GetStorageUIComponent();
+	TObjectPtr<UStorageInventoryComponent>& GetInventoryComponent();
 	TSubclassOf<UUICollectableStorageInventory>& GetInventoryClass();
+	const FIntPoint& GetSize() const;
+
 private:
+
 
 	/*
 	                                   Data components.
@@ -46,9 +52,13 @@ private:
 	TObjectPtr<UCollectableStorageDataAsset> StaticStorageData;
 
 
+
 	/*
 	                                 Custom components.
 	*/
 	UPROPERTY(VisibleAnywhere, Category = "Component", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCollectableStorageUIComponent> CollectableStorageUIComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Component", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UStorageInventoryComponent> StorageInventoryComponent;
 };

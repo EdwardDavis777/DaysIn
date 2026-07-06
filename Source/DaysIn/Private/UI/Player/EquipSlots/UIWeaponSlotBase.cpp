@@ -9,9 +9,9 @@
 
 
 
-void UUIWeaponSlotBase::StoreItem(AItemBase* Item)  
+void UUIWeaponSlotBase::StoreItem(AItemBase* Item, const FIntPoint& Position)
 {
-    UUIEquipSlotBase::StoreItem(Item);
+    UUIEquipSlotBase::StoreItem(Item,Position);
 
     if(StoredWeapon = FindAssocaitedInstance<UWeaponInstance>())
     { 

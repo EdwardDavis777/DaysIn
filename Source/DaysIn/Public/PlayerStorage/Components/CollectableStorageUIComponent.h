@@ -86,8 +86,10 @@ public:
 
 
 
-
-
+   /*
+                                           Accessors.
+   */
+   UUICollectableStorageInventory* GetInventoryWidget();
 private:
 
    /*
@@ -131,12 +133,13 @@ private:
 
 
 	/*
-	                           Runtime components.
+	                                  Runtime components.
 	*/
 
 	UPROPERTY()
 	TObjectPtr<UUIRegionPanel> ParentPanel;
 	
+
 	UPROPERTY()
 	bool bAlreadyConstructed = false; 
 };

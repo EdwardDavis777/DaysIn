@@ -8,7 +8,7 @@
  
  
 //Other imports.
-#include "Dispatches/PlayerUISubsystemDispatches.h" 
+#include "Dispatches/PlayerUISubsystemDispatches.h"  
 
 
 //Engine imports.  
@@ -21,6 +21,7 @@
 //Forward declares.
 class UUIPlayerMain;
 class UUIPlayerEquipmentMain;
+
 
 
 UCLASS()
@@ -50,6 +51,8 @@ public:
 	                                   Mutators.
 	*/
 
+
+
 	/*
 	     Updates the PlayerUISubsystem with the current UIMain 
 		 pointer.
@@ -69,7 +72,6 @@ public:
 		widget instance.
 	*/
 	void SetPlayerEquipmentMain(UUIPlayerEquipmentMain* UIEquipment);
-
 
 
 	/*
