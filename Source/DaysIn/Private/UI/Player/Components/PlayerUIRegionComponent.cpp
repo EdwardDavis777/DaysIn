@@ -23,26 +23,21 @@ void UPlayerUIRegionComponent::Initialize(UWorld* WorldContext, UUserWidget* Own
 
 
 
-
-
-/*
-								       Region event functions.
-*/
-
-UUIRegionPanel* UPlayerUIRegionComponent::AddWidgetToRegion(UUICollectableStorageInventory* InventoryInstance, UCanvasPanel* GroupPanel)
+UUIRegionPanel* UPlayerUIRegionComponent::AddToRegion(UUIDroppableBase* WidgetToAdd)
 {
-	if (!InventoryInstance || !GroupPanel) return nullptr;
+	if (!WidgetToAdd || !PlayerMain) return nullptr;
 
-	TArray<UWidget*> Children = GroupPanel->GetAllChildren();
+	TArray<UWidget*> Children = PlayerMain->GetGroupPanel()->GetAllChildren();
+	
 	for (auto& Child : Children)
 	{
 		if (!Child) continue;
 
 		if (auto* Region = Cast<UUIRegionPanel>(Child))
 		{
-			if (Region->GetRegionTag() == InventoryInstance->GetRegionTag())
+			if (Region->GetRegionTag() == WidgetToAdd->GetRegionTag())
 			{
-				Region->GetSizeBox()->AddChild(InventoryInstance);
+				Region->AddToRegion(WidgetToAdd);
 				return Region;
 			}
 		}

@@ -16,6 +16,7 @@
 #include "Items/Abstracts/ItemInstance.h"
 #include "Items/Abstracts/ItemBase.h"
 #include "UI/Items/Abstracts/UIItemIconBase.h"
+#include "UI/Interactables/Abstracts/GlobalEvents/DraggableTemplates/DraggableTemplates.h"
 
 
 //Static data imports.
@@ -51,13 +52,10 @@ bool UDroppableUIComponent::HandleDrop(UDragDropOperation* InOperation)
 {
 	if (!InOperation || !InOperation->Payload || !Droppable) return false;
 
-	if (auto* DragWidget = Cast<UUIDraggableBase>(InOperation->Payload))
+	if (UItemInstance* DragInst = DraggableTemplate::GetPayloadInstance<UUIDraggableBase>(InOperation))
 	{
-		if (auto* DragInst = Cast<UItemInstance>(DragWidget->GetAssocaitedInstance()))
-		{
-			Droppable->StoreDropped(DragInst);
-			return true;
-		}
+		Droppable->StoreDropped(DragInst);
+		return true;
 	}
 	return false;
 }

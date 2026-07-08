@@ -1,7 +1,7 @@
 #pragma once
 
 /*
-
+ 
      Handles adding widgets into the UI player main that is added using the
 	 region layout.
 
@@ -18,6 +18,7 @@
 //Forward declares.
 class UUIPlayerMain;
 class UUICollectableStorageInventory;
+class UUIDroppableBase;
 class UCanvasPanel;
 class UUIRegionPanel;
 
@@ -31,25 +32,23 @@ class DAYSIN_API UPlayerUIRegionComponent : public UNativeUIComponent
 public:
 	virtual void Initialize(UWorld* WorldContext, UUserWidget* OwningWidget) override;
 
-
 	/*
-	                               Region event functions.
+	                             Region event functions.
 	*/
 
 	/*
-	     Adds a storage instance's inventory to its assocaited region type
-		 in the player mains group panel.
+	    Checks if the widget to add is assocaited with any regions in the UI player
+		main, if so it will add it to the region cache.
 
-		 @param InventoryInstance: pointer to some storage inventory 
-		 instance.
+		@param WidgetToAdd: pointer to a widget you wish 
+		to add to a region.
 
-		 @param GroupPanel: pointer to the UI player mains
-		 group canvas panel.
-
-		 @return UUIRegionPanel: pointer to the region panel that the assocaited inventory
-		 instance was added to.
+		@return UUIRegionPanel: pointer to the region instance
+		that added the passed widget.
 	*/
-	UUIRegionPanel* AddWidgetToRegion(UUICollectableStorageInventory* InventoryInstance,UCanvasPanel* GroupPanel);
+	UUIRegionPanel* AddToRegion(UUIDroppableBase* WidgetToAdd);
+
+
 
 private:
 

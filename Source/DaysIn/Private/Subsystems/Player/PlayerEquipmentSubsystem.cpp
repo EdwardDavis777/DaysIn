@@ -7,18 +7,24 @@
 void UPlayerEquipmentSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+	BindDelegates();
 }
-
+ 
 void UPlayerEquipmentSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
 }
 
+void UPlayerEquipmentSubsystem::BindDelegates()
+{
+	PlayerEquipmentDispatches.StorageAdded.AddUObject(this, &UPlayerEquipmentSubsystem::AddStorage);
+	PlayerEquipmentDispatches.StorageRemoved.AddUObject(this, &UPlayerEquipmentSubsystem::RemoveStorage);
+}
 
 
 
 /*
-							     Cache mutators.
+						      Equipment event functions.
 */
 
 void UPlayerEquipmentSubsystem::AddStorage(UCollectableStorageInstance* Storage)
@@ -36,7 +42,7 @@ void UPlayerEquipmentSubsystem::RemoveStorage(UCollectableStorageInstance* Stora
 
 
 /*
-								  Accessors.
+								     Accessors.
 */
 
 const TArray<TObjectPtr<UCollectableStorageInstance>>& UPlayerEquipmentSubsystem::GetPlayerStorages() const

@@ -8,7 +8,7 @@
  
 //Engine imports.
 #include "CoreMinimal.h"
-#include "UI/Player/UIEquipSlotBase.h"
+#include "UI/Player/UIEquipSlotBase.h" 
 #include "UIStorageSlot.generated.h"
 
 
@@ -29,8 +29,8 @@ public:
 								 Virtual event functions.
 	*/
 	virtual void StoreItem(AItemBase* Item, const FIntPoint& Position = FIntPoint(0, 0)) override;
-	virtual bool StoreDropped(UItemInstance* ItemInstance) override;
-	virtual void RemoveStored(TObjectPtr<UItemInstance>& AssocaitedInstance) override;
+	virtual bool StoreDropped(UItemInstance* ItemInstance, const FIntPoint& Position = FIntPoint(0, 0)) override;
+	virtual void RemoveStored(TObjectPtr<UItemInstance>& AssociatedInstance) override;
 
 private:
 

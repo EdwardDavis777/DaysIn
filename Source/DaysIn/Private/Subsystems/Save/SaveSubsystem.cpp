@@ -4,17 +4,18 @@
 
 //Subsystem imports.
 #include "Subsystems/Player/PlayerUISubsystem.h"
+#include "Subsystems/Player/PlayerEquipmentSubsystem.h"
 
 
 
-
-
+ 
 void USaveSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
 	SaveManager = Collection.InitializeDependency<USaveManagerSubsystem>();
 	PlayerUISubsystem = Collection.InitializeDependency<UPlayerUISubsystem>();
+	PlayerEquipmentSubsystem = Collection.InitializeDependency<UPlayerEquipmentSubsystem>();
 }
 
 

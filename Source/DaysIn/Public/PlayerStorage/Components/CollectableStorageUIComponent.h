@@ -19,8 +19,9 @@
 class UCollectableStorageInstance;
 class UUICollectableStorageInventory;
 class UPlayerUISubsystem;
+class UPlayerEquipmentSubsystem;
 class UUIRegionPanel;
-
+class UCanvasPanelSlot;
 
 
 UCLASS()
@@ -30,115 +31,106 @@ class DAYSIN_API UCollectableStorageUIComponent : public UGameplayComponent
 
 public:
 	virtual void Initialize(UWorld* WorldContext, UObject* OwnerObject) override;
+	void BindDelegates();
 
-
-   /*
-                           Widget construction event functions.
-   */
-   
-
-   /*
-       Constructs a collectable storages inventory and adds it to some panel
-	   inside of the players UI main.
-
-	   @param Columns: reference to the amount of columns
-	   this spatial grid implements.
-
-	   @param Rows: reference to the amount of rows
-	   this spatial grid implements.
-   */
-   void MakeInventory(const int32& Columnes,const int32& Rows);
-
-
-   /*
-       Creates a brand new inventory widget instance in memory for an initial
-	   construction event.
-
-	   @param Columns: reference to the amount of columns
-	   this spatial grid implements.
-
-	   @param Rows: reference to the amount of rows
-	   this spatial grid implements.
-   */
-   void ConstructInitial(const int32& Columns, const int32& Rows);
-
-
-   /*
-	   Performs a re-build but only  for its assocaited region panel that
-	   it gets added back into. Performs simple initializations for an already
-	   constrcuted inventory instance.
-  */
-   void RebuildInRegion();
-
-
-
-
-
-   /*
-                               Widget deconstruction event functions.
-   */
-
-   /*
-        Clears this inventory widget from its region panel, but keeps it in 
-		memory for later.
-   */
-   void ClearInventory();
-
-
-
-   /*
-                                           Accessors.
-   */
-   UUICollectableStorageInventory* GetInventoryWidget();
 private:
 
-   /*
-                                        Helper functions.
-   */
-
-   /*
-       Sets the size of an assocaited region panel in pixel width/height,
-	   and sets the child widgets root size box size.
-
-	   @param RegionPanel: pointer to a region panel.
-
-	   @param Columns: reference to the amount of columns
-	   this spatial grid implements.
-
-	   @param Rows: reference to the amount of rows
-	   this spatial grid implements.
-   */
-   void SetRegionPanelSize(UUIRegionPanel* RegionPanel,const int32& Columns,const int32& Rows);
-
-
-
 	/*
-	                                     Components.
+	                                Components.
 	*/
 	UPROPERTY()
-	TObjectPtr<UCollectableStorageInstance> CollectableStorageInstance;
+	TObjectPtr<UCollectableStorageInstance> StorageInstance;
 
-	UPROPERTY()
-	TObjectPtr<UUICollectableStorageInventory> InventoryWidget;
-
-
-
-	/*
-	                                  Cache components.
-	*/
 	UPROPERTY()
 	TObjectPtr<UPlayerUISubsystem> PlayerUISubsystem;
 
+	UPROPERTY()
+	TObjectPtr<UPlayerEquipmentSubsystem> PlayerEquipmentSubsystem;
+	
 
 
 
 	/*
-	                                  Runtime components.
+	                              Event functions.
 	*/
 
+
+
+	/*
+	      Delegated function; it is broadcasted to whenever a player collects 
+		  some storage object in the world. If that collected storage is equal
+		  to the storage instance that owns this component, then the function is 
+		  executed. It will either construct a brand new inventory instance,
+		  or it will re-build a pre-existing inventory instance.
+
+		  @param Instance: pointer to the collected storage
+		  instance.
+	*/
+	void CreateInventory(UCollectableStorageInstance* Instance);
+
+
+
+	/*
+	     Delegated function; it is broadcated to whenever a player removes/drops
+		 some storage object in the world. If that removed storage is equal to 
+		 the storage instance that owns this component, then the function is 
+		 executed fully. Will simply remove the instance inventory from
+		 render.
+
+		 @param Instance: pointer to the removed storage 
+		 instance.
+	*/
+	void DeconstructInventory(UCollectableStorageInstance* Instance);
+
+
+	/*
+	                             Construction events.
+	*/
+
+	/*
+	     Constructs a brand new inventory instance in memory, and 
+		 adds it to a region in the UIPlayerMain. Will also set a
+		 run-time flag that will notify other classes about the construction
+		 event; dis-allowing re-constructions for the persistent instance.
+
+		 @param Instance: pointer to a storage instance to re-construct
+		 an inventory widget for.
+	*/
+	void ConstructInitial(UCollectableStorageInstance* Instance);
+
+	/*
+	     Simply re-builds an already constrcuted inventory widget back into 
+		 its assocaited region.
+	*/
+	void RebuildRegion();
+
+
+
+	/*
+	                               Helper functions.
+	*/
+
+	/*
+	     Sets the size of this inventorys parent region to the inventory
+		 instance size.
+
+		 @param Instance: pointer to a storage instance
+		 object.
+	*/
+	void SetRegionSize(UCollectableStorageInstance* Instance);
+
+
+	/*
+	                              Runtime components.
+	*/
 	UPROPERTY()
-	TObjectPtr<UUIRegionPanel> ParentPanel;
-	
+	TObjectPtr<UUICollectableStorageInventory> StorageInventory;
+
+	UPROPERTY()
+	TObjectPtr<UUIRegionPanel> ParentRegion;
+
+	UPROPERTY()
+	TObjectPtr<UCanvasPanelSlot> ParentSlot;
 
 	UPROPERTY()
 	bool bAlreadyConstructed = false; 

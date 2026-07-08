@@ -2,7 +2,10 @@
 #include "UI/Player/UIRegionPanel.h"
 
 //Component imports.
-#include "Components/SizeBox.h"
+#include "Components/CanvasPanel.h"
+
+//Other imports.
+#include "UI/Interactables/Abstracts/UIDroppableBase.h"
 
 
 
@@ -14,52 +17,37 @@ void UUIRegionPanel::NativeConstruct()
 
 
 /*
-									Log methods.
+							   Region event functions.
 */
 
-int32 UUIRegionPanel::LogRegionChildren(double logTime)
+void UUIRegionPanel::AddToRegion(UUIDroppableBase* WidgetToAdd)
 {
-#if WITH_EDITOR
+	if (!WidgetToAdd || !RegionPanel) return;
 
-	if (!RootSizeBox) return 0;
-	TArray<UWidget*> Children = RootSizeBox->GetAllChildren();
-	int32 ChildCount = Children.Num();
-
-	FString log = FString::Printf(TEXT("Region count: %i"), ChildCount);
-	GEngine->AddOnScreenDebugMessage(-1, logTime, FColor::Purple, log);
-	return ChildCount;
-#endif
-	return 0;
+	if (!RegionChildren.Contains(WidgetToAdd))
+	{
+		RegionChildren.Emplace(WidgetToAdd);
+	}
 }
+
+void UUIRegionPanel::RemoveFromRegion(UUIDroppableBase* WidgetToRemove)
+{
+	if (!WidgetToRemove || !RegionPanel) return;
+
+	if (RegionChildren.Contains(WidgetToRemove))
+	{
+		RegionChildren.Remove(WidgetToRemove);
+	}
+}
+
 
 
 
 /*
-									 Mutators.
+								Accessors.
 */
 
-void UUIRegionPanel::RemoveChildFromRegion(UUserWidget* WidgetToRemove)
+UCanvasPanel* UUIRegionPanel::GetRegionPanel()
 {
-	if (!WidgetToRemove || !RootSizeBox) return;
-
-	TArray<UWidget*> Children = RootSizeBox->GetAllChildren();
-	if (Children.Contains(WidgetToRemove)) { Children.Remove(WidgetToRemove); RootSizeBox->RemoveChild(WidgetToRemove); }
-}
-
-
-/*
-									Accessors.
-*/
-
-UWidget* UUIRegionPanel::GetChild()
-{
-	if (!RootSizeBox) return nullptr;
-
-	TArray<UWidget*> Children = RootSizeBox->GetAllChildren();
-	return Children[0];
-}
-
-USizeBox* UUIRegionPanel::GetSizeBox()
-{
-	return RootSizeBox.Get();
+	return RegionPanel.Get();
 }

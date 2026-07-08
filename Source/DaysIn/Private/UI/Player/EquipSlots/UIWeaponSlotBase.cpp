@@ -22,7 +22,7 @@ void UUIWeaponSlotBase::StoreItem(AItemBase* Item, const FIntPoint& Position)
 
 
 
-bool UUIWeaponSlotBase::StoreDropped(UItemInstance* ItemInstance)
+bool UUIWeaponSlotBase::StoreDropped(UItemInstance* ItemInstance, const FIntPoint& Position)
 {
     if(UUIEquipSlotBase::StoreDropped(ItemInstance))
     { 

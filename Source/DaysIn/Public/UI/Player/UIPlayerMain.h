@@ -7,7 +7,7 @@
 
 
 //Engine imports. 
-#include "CoreMinimal.h"
+#include "CoreMinimal.h" 
 #include "Blueprint/UserWidget.h"
 #include "UIPlayerMain.generated.h" 
  
@@ -23,7 +23,7 @@ class UUIPlayerEquipmentMain;
 class UPlayerMainUIComponent;
 class UUIRegionPanel;
 class UPlayerUIRegionComponent;
-class UUICollectableStorageInventory;
+class UUIDroppableBase;
 
 
 
@@ -123,7 +123,7 @@ public:
 		 @return UUIRegionPanel: pointer to the assocaited region panel
 		 the instance was added into to the caller.
 	*/
-	UUIRegionPanel* AddToRegion(UUICollectableStorageInventory* InventoryInstance);
+	UUIRegionPanel* AddToRegion(UUIDroppableBase* WidgetToAdd);
 
 
 	/*
@@ -145,4 +145,5 @@ public:
 	*/
 	bool bIsVisible();
 	UUIPlayerEquipmentMain* GetPlayerEquipmentMain();
+	UCanvasPanel* GetGroupPanel();
 };

@@ -5,6 +5,7 @@
 
 //Component imports.
 #include "Blueprint/UserWidget.h"
+#include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/SizeBox.h"
 
@@ -29,6 +30,7 @@
 
 //Subsystem imports.
 #include "Subsystems/Player/PlayerUISubsystem.h"
+#include "Subsystems/Player/PlayerEquipmentSubsystem.h"
 
 
 
@@ -37,97 +39,99 @@ void UCollectableStorageUIComponent::Initialize(UWorld* WorldContext, UObject* O
 {
 	Super::Initialize(WorldContext, OwnerObject);
 	
-	CollectableStorageInstance = GetOwner<UCollectableStorageInstance>();
+	StorageInstance = GetOwner<UCollectableStorageInstance>();
 	PlayerUISubsystem = SubUtility::FindSub<UPlayerUISubsystem>(WorldContext);
+	PlayerEquipmentSubsystem = SubUtility::FindSub<UPlayerEquipmentSubsystem>(WorldContext);
+	BindDelegates();
+	
+}
+
+void UCollectableStorageUIComponent::BindDelegates()
+{
+	if (!PlayerEquipmentSubsystem) return;
+
+	PlayerEquipmentSubsystem->PlayerEquipmentDispatches.StorageAdded.AddUObject(this, &UCollectableStorageUIComponent::CreateInventory);
+	PlayerEquipmentSubsystem->PlayerEquipmentDispatches.StorageRemoved.AddUObject(this, &UCollectableStorageUIComponent::DeconstructInventory);
 }
 
 
 
 
 
-
 /*
-						     Widget construction event functions.
+								   Event functions.
 */
 
-void UCollectableStorageUIComponent::MakeInventory(const int32& Columns,const int32& Rows)
+void UCollectableStorageUIComponent::CreateInventory(UCollectableStorageInstance* Instance)
 {
-	if (!CollectableStorageInstance || !PlayerUISubsystem) return;
+	if (Instance != StorageInstance) return;
 
 	if (!bAlreadyConstructed)
 	{
-		ConstructInitial(Columns, Rows);
+		ConstructInitial(StorageInstance);
 	}
 	else
 	{
-		RebuildInRegion();
+		RebuildRegion();
 	}
 }
 
-void UCollectableStorageUIComponent::ConstructInitial(const int32& Columns, const int32& Rows)
+void UCollectableStorageUIComponent::DeconstructInventory(UCollectableStorageInstance* Instance)
 {
-	if (!CollectableStorageInstance || !PlayerUISubsystem) return;
+	if (Instance != StorageInstance) return;
 
-	if (InventoryWidget = CreateWidget<UUICollectableStorageInventory>(World, CollectableStorageInstance->GetInventoryClass()))
-	{
-		ParentPanel = PlayerUISubsystem->GetPlayerMain()->AddToRegion(InventoryWidget);
-		if (!ParentPanel) return;
-
-		InventoryWidget->InitializeGrid(Columns, Rows);
-		SetRegionPanelSize(ParentPanel, Columns, Rows);
-		bAlreadyConstructed = true;
-	}
+	ParentRegion->RemoveFromRegion(StorageInventory);
+	StorageInventory->RemoveFromRender();
 }
 
-void UCollectableStorageUIComponent::RebuildInRegion()
-{
-	if (!InventoryWidget || !ParentPanel) return;
 
-	ParentPanel->GetSizeBox()->AddChild(InventoryWidget);
-	SetRegionPanelSize(ParentPanel, CollectableStorageInstance->GetStaticStorageData()->CollectableStorageProperties.StorageSize.X, CollectableStorageInstance->GetStaticStorageData()->CollectableStorageProperties.StorageSize.Y);
-	InventoryWidget->AddToRender();
+
+/*
+								 Construction events.
+*/
+	
+
+void UCollectableStorageUIComponent::ConstructInitial(UCollectableStorageInstance* Instance)
+{
+	if (!Instance || !PlayerUISubsystem || !StorageInstance) return;
+
+	StorageInventory = CreateWidget<UUICollectableStorageInventory>(World, Instance->GetStaticStorageData()->CollectableStorageUIProperties.InventoryWidgetClass);
+	if (!StorageInventory) return;
+
+	ParentRegion = PlayerUISubsystem->GetPlayerMain()->AddToRegion(StorageInventory);
+	if (!ParentRegion) return;
+
+	ParentSlot = Cast<UCanvasPanelSlot>(ParentRegion->GetRegionPanel()->AddChild(StorageInventory));
+	if (!ParentSlot) return;
+
+	StorageInventory->InitializeGrid(StorageInstance->GetSize().X, StorageInstance->GetSize().Y, StorageInstance);
+	SetRegionSize(StorageInstance);
+	bAlreadyConstructed = true;
+
 }
 
+
+
+void UCollectableStorageUIComponent::RebuildRegion()
+{
+	if (!StorageInstance || !StorageInventory || !ParentRegion) return;
+
+	ParentRegion->AddToRegion(StorageInventory);
+	StorageInventory->AddToRender();
+}
 
 
 
 
 /*
-							  Widget deconstruction event functions.
+								   Helper functions.
 */
 
-void UCollectableStorageUIComponent::ClearInventory()
+
+void UCollectableStorageUIComponent::SetRegionSize(UCollectableStorageInstance* Instance)
 {
-	if (!InventoryWidget || !ParentPanel) return;
+	if (!Instance || !ParentSlot) return;
 
-	ParentPanel->RemoveChildFromRegion(InventoryWidget);
-	InventoryWidget->RemoveFromRender();
-}
-
-
-
-
-/*
-                                        Helper functions.
-*/
-
-void UCollectableStorageUIComponent::SetRegionPanelSize(UUIRegionPanel* RegionPanel, const int32& Columns, const int32& Rows)
-{
-	if (!RegionPanel || !InventoryWidget) return; 
-
-	if (auto* RegionSlot = Cast<UCanvasPanelSlot>(RegionPanel->Slot))
-	{
-		FIntPoint SlotSize = FIntPoint{ Columns * WidgetMath::TileSize,Rows * WidgetMath::TileSize };
-		RegionSlot->SetSize(SlotSize);
-	}
-}
-
-
-/*
-										  Accessors.
-*/
-
-UUICollectableStorageInventory* UCollectableStorageUIComponent::GetInventoryWidget()
-{
-	return InventoryWidget.Get();
+	const FVector2D& RegionSize = FVector2D(Instance->GetSize().X * WidgetMath::TileSize, Instance->GetSize().Y * WidgetMath::TileSize);
+	ParentSlot->SetSize(RegionSize);
 }

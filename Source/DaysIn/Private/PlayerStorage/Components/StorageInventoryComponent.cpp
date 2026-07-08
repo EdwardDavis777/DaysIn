@@ -12,6 +12,14 @@
 
 
 
+//Utility imports.
+#include  "SubsystemUtilitys/SubsystemUtility.h"
+
+//Subsystem imports.
+#include "Subsystems/Systems/Inventory/StorageInventorySubsystem.h"
+
+
+
 
 void UStorageInventoryComponent::Initialize(UWorld* WorldContext, UObject* OwnerObject)
 {
@@ -22,6 +30,7 @@ void UStorageInventoryComponent::Initialize(UWorld* WorldContext, UObject* Owner
 		Columns = CollectableStorageInstance->GetSize().X;
 		Rows = CollectableStorageInstance->GetSize().Y;
 		StoredItems.SetNum(Columns * Rows);
+		StorageInventorySubsystem = SubUtility::FindSub<UStorageInventorySubsystem>(WorldContext);
 	}
 }
 
@@ -30,12 +39,12 @@ void UStorageInventoryComponent::Initialize(UWorld* WorldContext, UObject* Owner
 
 
 /*
-                                 Placement functions. 
+                                  Mutator functions. 
 */
 
 void UStorageInventoryComponent::AddItem(UItemInstance* Instance, const int32& Origin)
 {
-	if (!Instance) return;
+	if (!Instance || !StorageInventorySubsystem) return;
 
 	const FIntPoint ItemSize = Instance->GetItemSize();
 	const FIntPoint Tile = IndexToTile(Origin);
@@ -47,22 +56,50 @@ void UStorageInventoryComponent::AddItem(UItemInstance* Instance, const int32& O
 			StoredItems[TileToIndex(FIntPoint(xPos, yPos))] = Instance;
 		}
 	}
-	CollectableStorageInstance->GetStorageUIComponent()->GetInventoryWidget()->StoreItem(Instance, Tile);
+
+	StorageInventorySubsystem->StorageDispatches.ItemAddedEvent.Broadcast(
+	CollectableStorageInstance, Instance, Tile);
+}
+
+void UStorageInventoryComponent::RemoveItem(UItemInstance* Instance)
+{
+	if (!Instance || StoredItems.IsEmpty()) return;
+
+	for (int32 i{}; i < StoredItems.Num(); i++)
+	{
+		if (StoredItems[i] == Instance) { StoredItems[i] = nullptr; }
+	}
 }
 
 
 
+
+
+
 /*
-                                     Conditionals.
+								   Mutator conditions.
 */
 
-bool UStorageInventoryComponent::bCanStore(AItemBase* Item)
+bool UStorageInventoryComponent::bCheckAndStore(UItemInstance* Instance, FIntPoint Position)
+{
+	if (!Instance) return false;
+
+	int32 Index = TileToIndex(Position);
+	if (bCanStore(Instance, Index))
+	{
+		AddItem(Instance, Index);
+		return true;
+	}
+	return false;
+}
+
+bool UStorageInventoryComponent::bCheckAndStore(AItemBase* Item)
 {
 	if (!Item) return false;
-
-	for (int32 i{}; i <= StoredItems.Num(); i++)
+	 
+	for (int32 i{}; i < StoredItems.Num(); i++)
 	{
-		if (bCanFit(Item->Instance(), i))
+		if (bCanStore(Item->Instance(), i))
 		{
 			AddItem(Item->Instance(), i);
 			Item->Pickup();
@@ -73,7 +110,12 @@ bool UStorageInventoryComponent::bCanStore(AItemBase* Item)
 }
 
 
-bool UStorageInventoryComponent::bCanFit(UItemInstance* Instance, int32 Origin)
+
+/*
+									 Conditionals.
+*/
+
+bool UStorageInventoryComponent::bCanStore(UItemInstance* Instance, int32 Origin)
 {
 	if (!Instance) return false;
 	
@@ -95,6 +137,30 @@ bool UStorageInventoryComponent::bCanFit(UItemInstance* Instance, int32 Origin)
 	return true;
 }
 
+bool UStorageInventoryComponent::bCanStore(UItemInstance* Instance, const FIntPoint& Position)
+{
+	if (!Instance) return false;
+
+	const FIntPoint ItemSize = Instance->GetItemSize();
+
+	for (int32 xPos{ Position.X }; xPos < Position.X + ItemSize.X; xPos++)
+	{
+		for (int32 yPos{ Position.Y }; yPos < Position.Y + ItemSize.Y; yPos++)
+		{
+			const int32 Index{ TileToIndex(FIntPoint(xPos,yPos)) };
+			if (bIsValidTile(FIntPoint(xPos, yPos)))
+			{
+				if (!bIsValidIndex(Index)) return false;
+			}
+			else { return false; }
+		}
+	}
+	return true;
+}
+
+
+
+
 
 bool UStorageInventoryComponent::bIsValidIndex(const int32& Index) const
 {
@@ -107,6 +173,6 @@ bool UStorageInventoryComponent::bIsValidTile(const FIntPoint& Tile) const
 {
 	if (Tile.X >= 0 && Tile.Y >= 0 &&
 	Tile.X < Columns && Tile.Y < Rows) return true;
-	
+
 	return false;
 }

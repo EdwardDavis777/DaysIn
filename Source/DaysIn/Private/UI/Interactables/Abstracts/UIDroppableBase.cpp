@@ -38,16 +38,30 @@ void UUIDroppableBase::NativeConstruct()
 	DroppableComponent = NativeUITemplate::CreateDefaultUIComponent<UDroppableUIComponent>(GetWorld(), this);
 	DraggableSubsystem = SubUtility::FindSub<UUIDraggableSubsystem>(GetWorld());
 	PlayerUISubsystem = SubUtility::FindSub<UPlayerUISubsystem>(GetWorld());
-
 	BindDelegates();
+}
+
+void UUIDroppableBase::NativeDestruct()
+{
+	Super::NativeDestruct();
+	UnBindDelegates();
 }
 
 
 void UUIDroppableBase::BindDelegates()
 {
 	if (!DraggableSubsystem || !PlayerUISubsystem) return;
+	
 	DraggableSubsystem->DraggableDispatches.DragEventTriggered.AddUObject(this, &UUIDroppableBase::ProxyRemoveEvent);
 	PlayerUISubsystem->PlayerUISubsystemDispatches.UIMainOutRender.AddUObject(this, &UUIDroppableBase::HookResetEvent);
+}
+
+void UUIDroppableBase::UnBindDelegates()
+{
+	if (!DraggableSubsystem || !PlayerUISubsystem) return;
+
+	DraggableSubsystem->DraggableDispatches.DragEventTriggered.RemoveAll(this);
+	PlayerUISubsystem->PlayerUISubsystemDispatches.UIMainOutRender.RemoveAll(this);
 }
 
 
@@ -72,13 +86,7 @@ void UUIDroppableBase::ProxyRemoveEvent(TObjectPtr<UItemInstance>& AssociatedIns
 */
 
 void UUIDroppableBase::StoreItem(AItemBase* Item, const FIntPoint& Position)
-{
-	if (!Item) return;
-
-	//Write these to construct a widget from the item instance.
-	//Dynamically later.
-}
-
+{ if (!Item) return; }
 
 
 void UUIDroppableBase::StoreItem(UItemInstance* Instance, const FIntPoint& Position)
@@ -88,16 +96,13 @@ void UUIDroppableBase::StoreItem(UItemInstance* Instance, const FIntPoint& Posit
 }
 
 
-
-bool UUIDroppableBase::StoreDropped(UItemInstance* ItemInstance)
+bool UUIDroppableBase::StoreDropped(UItemInstance* ItemInstance, const FIntPoint& Position)
 {
 	if (!ItemInstance) return false;
-
-	//Write these to construct a widget from the item instance.
-	//Dynamically later.
+	
+	DroppableComponent->HandleStore(ItemInstance, Data.StoredDragWidgets, Position, this);
 	return true;
 }
-
 
 void UUIDroppableBase::RemoveStored(TObjectPtr<UItemInstance>& AssociatedInstance)
 {
@@ -114,9 +119,10 @@ void UUIDroppableBase::RemoveStored(TObjectPtr<UItemInstance>& AssociatedInstanc
 								    Virtual hook event functions.
 */
 
-void UUIDroppableBase::HookDragOverEvent(UDragDropOperation* InOperation){}
-void UUIDroppableBase::HookDragLeaveEvent(){}
+void UUIDroppableBase::HookDragOverEvent(const FGeometry& InGeometry, const FDragDropEvent& InDragEvent, UDragDropOperation* InOperation){}
+void UUIDroppableBase::HookDragLeaveEvent(const FDragDropEvent& InDragEvent, UDragDropOperation* InOperation){}
 void UUIDroppableBase::HookResetEvent(){}
+
 
 /*
 								  Engine UI input override functions.
@@ -131,14 +137,14 @@ bool UUIDroppableBase::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 bool UUIDroppableBase::NativeOnDragOver(const FGeometry& InGeometry, const FDragDropEvent& InDropEvent, UDragDropOperation* InOperation)
 {
 	if (!InOperation || !InOperation->Payload) return false;
-	
-	HookDragOverEvent(InOperation);
+	HookDragOverEvent(InGeometry,InDropEvent,InOperation);
+
 	return true;
 }
 
 void UUIDroppableBase::NativeOnDragLeave(const FDragDropEvent& InDragEvent, UDragDropOperation* InOperation)
 {
-	HookDragLeaveEvent();
+	HookDragLeaveEvent(InDragEvent,InOperation);
 }
 
 
@@ -188,6 +194,17 @@ USizeBox* UUIDroppableBase::GetSizeBox() const
 UCanvasPanel* UUIDroppableBase::GetGroupPanel() const
 {
 	return GroupPanel.Get();
+}
+
+UUIDraggableBase* UUIDroppableBase::FindStoredWidget(UItemInstance* AssocaitedInstance) const
+{
+	if (!AssocaitedInstance) return nullptr;
+
+	if (auto* FoundWidget = Data.StoredDragWidgets.Find(AssocaitedInstance))
+	{
+		return *FoundWidget;
+	}
+	return nullptr;
 }
 
 const bool UUIDroppableBase::bIsVisible() const

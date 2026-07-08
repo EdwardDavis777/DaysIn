@@ -7,7 +7,7 @@
 
 */
 
-
+ 
 
 //Engine imports.
 #include "CoreMinimal.h"
@@ -18,6 +18,7 @@
 
 //Forward declares.
 class UCollectableStorageInstance;
+class UStorageInventorySubsystem;
 class AItemBase;
 
 
@@ -31,8 +32,9 @@ public:
 	virtual void Initialize(UWorld* WorldContext, UObject* OwnerObject) override;
 	
 
+
 	/*
-	                            Inventory event functions.
+	                              Mutators.
 	*/
 
 	/*
@@ -51,7 +53,41 @@ public:
 
 
 	/*
-	    Checks if the passed item can store it inside of this
+		 Removes all instances found in this inventory that match the passed
+		 instance type by the caller.
+
+		 @param Instance: pointer to the item instance you wish to
+		 remove.
+	*/
+	void RemoveItem(UItemInstance* Instance);
+
+
+
+	/*
+	                            Mutator conditions.
+	*/
+
+
+	/*
+	    Checks if an instance can be stored given a 2D mouse position,
+	    the function will convert the 2D position to an index, then
+	    perform storage checks. If all checks succeed, then the item will
+	    be stored at the given position.
+
+	    @param Instance: pointer to the item instance you wish
+	    to store.
+
+	    @param Position: Copy to a 2D position; Note a copy is needed
+	    as it will mutate the state.
+
+	    @return TRUE/FALSE: true if the item was stored, false if the item
+	    cannot be stored for some reason.
+    */
+	bool bCheckAndStore(UItemInstance* Instance, FIntPoint Position);
+
+
+	/*
+		Checks if the passed item can be stored inside of this
 		inventory component.
 
 		@param Item: pointer to the item you wish to
@@ -60,9 +96,13 @@ public:
 		@return TRUE/FALSE: true if the item gets stored, false
 		if the item cannot be stored.
 	*/
-	bool bCanStore(AItemBase* Item);
+	bool bCheckAndStore(AItemBase* Item);
 
 
+
+	/*
+								   Conditionals.
+    */
 
 	/*
 	     Checks if the given instance can fit inside of the inventory
@@ -77,8 +117,23 @@ public:
 		 @return TRUE/FALSE: true if the instance can fit, false
 		 if the instance cannot.
 	*/
-	bool bCanFit(UItemInstance* Instance, int32 Origin);
+	bool bCanStore(UItemInstance* Instance, int32 Origin);
 
+
+	/*
+	     Checks if the given instance can fit inside of the inventory
+		 array cache given a 2D position.
+
+		 @param Instance: pointer to the instance you wish 
+		 to store.
+
+		 @param Position: 2D position you wish to use as the starting
+		 point.
+         
+		 @return TRUE/FALSE: true if the instance can fit, false
+		 if the instance cannot.
+	*/
+	bool bCanStore(UItemInstance* Instance, const FIntPoint& Position);
 
 
 	/*
@@ -131,7 +186,7 @@ public:
 	*/
 	FORCEINLINE FIntPoint IndexToTile(const int32& Index) const
 	{
-		return FIntPoint(Index % Columns, Index / Rows);
+		return FIntPoint(Index % Columns, Index / Columns);
 	}
 
 
@@ -160,6 +215,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<UCollectableStorageInstance> CollectableStorageInstance;
 
+	UPROPERTY()
+	TObjectPtr<UStorageInventorySubsystem> StorageInventorySubsystem;
 
     /*
 	                               Cache components.

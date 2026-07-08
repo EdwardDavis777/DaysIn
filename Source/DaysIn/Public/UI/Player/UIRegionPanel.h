@@ -1,6 +1,6 @@
 #pragma once
 
-/*
+/* 
 
     Defines class defaults for region panels, each region panel will
 	define an editor defined region type. For each collectable storage
@@ -9,12 +9,6 @@
 
 	Once instance is defined in the editor, then dragged into the UIPlayerMain widget
 	UMG, then the region type is defined in there.
-
-	Note: this class provides a get child widget member function, kinda strange looking 
-	but it caches an array of UWidget pointers then returns a pointer to the first 
-	element in the array, this is done as each region is meant to hold only one child.
-	Would be strange to make callers manually use only the first index, but this is really
-	the only way as unreal's accessor expects an array of possible children.
 
 */
 
@@ -31,7 +25,8 @@
 
 //Forward declares.
 class USizeBox;
-
+class UCanvasPanel;
+class UUIDroppableBase;
 
 
 UCLASS()
@@ -49,6 +44,9 @@ private:
 	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = true))
 	TObjectPtr<USizeBox> RootSizeBox;
 
+	UPROPERTY(meta = (BindWidget, AllowPrivateAccess = true))
+	TObjectPtr<UCanvasPanel> RegionPanel;
+
 
 	/*
 	                                    Data.
@@ -56,44 +54,39 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data| Configurations", meta = (AllowPrivateAccess = true))
 	ERegionTag RegionTag;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data| Runtime", meta = (AllowPrivateAccess = true))
+	TArray<TObjectPtr<UUIDroppableBase>> RegionChildren;
+
 
 public:
 
 	/*
-	                                Log methods.
+	                           Region event functions.
 	*/
 
 	/*
-	      Simply caches all children into an array, and prints
-		  the amount of children in that array.
+	      Adds a widget to this region panel
+		  instance.
 
-		  @param logTime: time in seconds you wish the log to 
-		  be printed on the screen, defaulted to just 10 seconds.
-
-		  @return int32(): the number of children inside of this 
-		  current region panel.
+		  @param UUIDroppableBase: pointer to a widget you wish to 
+		  add to this region panel.
 	*/
-	int32 LogRegionChildren(double logTime = 10.0f);
-	
+	void AddToRegion(UUIDroppableBase* WidgetToAdd);
+
 
 	/*
-	                                 Mutators.
-	*/
+	      Removes a widget from this region panel
+		  instance.
 
-	/*
-	     Removes a user widget from this region panel.
-
-		 @param WidgetToRemove: pointer to the widget
-		 you wish to remove from this region.
+		  @parma UUIDroppableBase: pointer to a widget you wish to 
+		  remove from this region panel.
 	*/
-	void RemoveChildFromRegion(UUserWidget* WidgetToRemove);
+	void RemoveFromRegion(UUIDroppableBase* WidgetToRemove);
 
 
 	/*
 	                                Accessors.
 	*/
 	FORCEINLINE const ERegionTag& GetRegionTag() const { return RegionTag; }
-	
-	UWidget* GetChild();
-	USizeBox* GetSizeBox();
+	UCanvasPanel* GetRegionPanel();
 };

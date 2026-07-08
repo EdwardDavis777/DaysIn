@@ -1,6 +1,6 @@
 #pragma once
 
-/*
+/* 
  
      Defines class defaults for all save related subsystems.
 	 Only subsystems that actually trigger save events at 
@@ -24,7 +24,7 @@
 //Forward declares.
 class USaveGame;
 class UPlayerUISubsystem;
-
+class UPlayerEquipmentSubsystem;
 
 
 UCLASS()
@@ -47,7 +47,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UPlayerUISubsystem> PlayerUISubsystem;
 
-    
+	UPROPERTY()
+	TObjectPtr<UPlayerEquipmentSubsystem> PlayerEquipmentSubsystem;
+
 
 	/*
 	                               Load event functions.

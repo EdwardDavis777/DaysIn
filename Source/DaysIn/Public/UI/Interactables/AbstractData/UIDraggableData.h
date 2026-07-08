@@ -71,25 +71,39 @@ struct FColorData
 	FLinearColor HoverBorderColor;
 
 
+	/*
+	     Defines the color of the draggable border when it can be 
+		 placed/dropped inside of some other user interface.
+	*/
+	UPROPERTY(EditAnywhere)
+	FLinearColor CanPlaceColor;
+
+
+	/*
+	     Defines the color of the draggable border when it
+		 cannot be place inside of some other user interface.
+	*/
+	UPROPERTY(EditAnywhere)
+	FLinearColor CannotPlaceColor;
+
+
 
 	FColorData()
 	: DefaultBorderColor(),DragBorderColor(1.0f,1.0f,1.0f,0.15f),
-	  HoverBorderColor(1.0f,1.0f,1.0f,0.15f)
+	  HoverBorderColor(1.0f,1.0f,1.0f,0.15f), CanPlaceColor(0.0f,1.0f,0.0f,0.2f), 
+	  CannotPlaceColor(1.0,0.0f,0.0f,0.2f)
 	{ }
 };
 
 
 
 USTRUCT(BlueprintType)
-struct FData
+struct FData 
 {
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleAnywhere, Category = "Data|Memory")
 	FRuntimeData RuntimeData;
-
-	UPROPERTY(EditAnywhere, Category = "Data|Configurations")
-	FColorData ColorData;
 };
 
 

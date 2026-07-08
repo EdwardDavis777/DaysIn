@@ -4,7 +4,6 @@
 
 //Component imports.
 #include "Framework/Application/SlateApplication.h"
-#include "Blueprint/DragDropOperation.h"
 
 
 //Widget imports.
@@ -17,7 +16,7 @@
 #include "Items/Abstracts/ItemInstance.h"
 #include "Items/Abstracts/ItemBase.h"
 #include "Characters/Player/Survivor.h"
-
+#include "UI/Interactables/Abstracts/GlobalEvents/DraggableTemplates/DraggableTemplates.h"
 
 //Utility imports.
 #include "SubsystemUtilitys/SubsystemUtility.h"
@@ -86,13 +85,10 @@ bool UPlayerMainUIComponent::SpawnEvent(UDragDropOperation* InOperation)
 {
 	if (!InOperation || !InOperation->Payload) return false;
 
-	if (auto* Drop = Cast<UUIDraggableBase>(InOperation->Payload))
+	if (UItemInstance* DropInst = DraggableTemplate::GetPayloadInstance<UUIDraggableBase>(InOperation))
 	{
-		if (auto* DropInst = Cast<UItemInstance>(Drop->GetAssocaitedInstance()))
-		{
-			SpawnItem(DropInst);
-			return true;
-		}
+		SpawnItem(DropInst);
+		return true;
 	}
 	return false;
 }

@@ -15,7 +15,7 @@
 
 //Other imports.
 #include "UI/Interactables/AbstractData/UIDroppableData.h"
-
+#include "SharedData/UI/UIRegionTag.h"
 
 //Engine imports.
 #include "CoreMinimal.h"
@@ -43,8 +43,9 @@ class DAYSIN_API UUIDroppableBase : public UUserWidget
 	
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	void BindDelegates();
-
+	void UnBindDelegates();
 	
 	/*
 	                               UUIDroppableBase components.
@@ -73,6 +74,9 @@ protected:
 	*/
 	UPROPERTY(VisibleAnywhere, Category = "Data|Memory")
 	FDroppableRuntimeData Data;
+
+	UPROPERTY(EditAnywhere, Category = "Data|Configurations")
+	ERegionTag RegionTag;
 
 	UPROPERTY()
 	TObjectPtr<UUIDraggableSubsystem> DraggableSubsystem;
@@ -174,10 +178,15 @@ public:
 		@param ItemInstance: pointer to an item instance
 		you wish to store.
 
+		@param Position: reference to the current drop position
+		in screen space. Defaulted to 0,0 in case you wish to use some
+		other way.
+
+
 		@return TRUE/FLASE: true if the dropped item was stored,
 		false if the dropped item faild for some reason.
 	*/
-	virtual bool StoreDropped(UItemInstance* ItemInstance);
+	virtual bool StoreDropped(UItemInstance* ItemInstance,const FIntPoint& Position = FIntPoint(0,0));
 
 
 
@@ -204,18 +213,30 @@ public:
 		the parent. Simply override and implment logic you wish 
 		to happen during drag over events.
 
+		@param InGeometry: reference to the cached geometry
+		during the drag event.
+
+		@param InDragEvent: reference to the drag event struct
+		data.
+
 		@param InOperation: pointer to the current drag 
 		drop operation.
 	*/
-	virtual void HookDragOverEvent(UDragDropOperation* InOperation);
+	virtual void HookDragOverEvent(const FGeometry& InGeometry,const FDragDropEvent& InDragEvent,UDragDropOperation* InOperation);
 
 
 	/*
 	    Allows derived classes to hook into drag leave events from
 		the parent. Simply override and implement logic you wish to
 		happen during a drag leave event.
+
+		@param InDragEvent: reference to the drag event 
+		struct data.
+
+		@param InOperation: pointer to the current drag
+		drop operation. 
 	*/
-	virtual void HookDragLeaveEvent();
+	virtual void HookDragLeaveEvent(const FDragDropEvent& InDragEvent,UDragDropOperation* InOperation);
 
 
 	/*
@@ -238,8 +259,10 @@ public:
 	/*
 	                                    Accessors.
 	*/
+	FORCEINLINE const ERegionTag& GetRegionTag() const { return RegionTag; }
 	UBorder* GetBorder() const;
 	USizeBox* GetSizeBox() const;
 	UCanvasPanel* GetGroupPanel() const;
+	UUIDraggableBase* FindStoredWidget(UItemInstance* AssocaitedInstance) const;
 	const bool bIsVisible() const;
 };

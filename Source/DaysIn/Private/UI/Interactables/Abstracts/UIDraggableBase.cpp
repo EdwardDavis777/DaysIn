@@ -8,7 +8,7 @@
 #include "Components/SizeBox.h"
 
 
-
+ 
 //Other imports.
 #include "Items/Abstracts/ItemBase.h"
 
@@ -39,7 +39,7 @@ void UUIDraggableBase::NativeConstruct()
 
 	if (MainBorder)
 	{
-		Data.ColorData.DefaultBorderColor = MainBorder->GetBrushColor();
+		ColorData.DefaultBorderColor = MainBorder->GetBrushColor();
 	}
 	BindDelegates();
 }
@@ -63,6 +63,8 @@ void UUIDraggableBase::UnBindDelegates()
 }
 
 
+
+
 /*
 								 Virtual construct functions.
 */
@@ -84,6 +86,8 @@ void UUIDraggableBase::Init(AItemBase* RawItem)
 }
 
 
+
+
 /* 
 							        Virtual hook functions.
 */
@@ -91,11 +95,12 @@ void UUIDraggableBase::Init(AItemBase* RawItem)
 void UUIDraggableBase::HookDragEvent(){}
 void UUIDraggableBase::HookMouseEnterEvent(){}
 void UUIDraggableBase::HookMouseLeaveEvent(){}
-
 void UUIDraggableBase::HookResetEvent()
 {
-	DraggableUIComponent->ResetDefaults(Data.ColorData.DefaultBorderColor);	
+	DraggableUIComponent->ResetDefaults(ColorData.DefaultBorderColor);	
 }
+
+
 
 
 /*
@@ -122,13 +127,13 @@ void UUIDraggableBase::NativeOnDragCancelled(const FDragDropEvent& InDragDropEve
 
 void UUIDraggableBase::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	DraggableUIComponent->SetHoverGlow(Data.ColorData.HoverBorderColor);
+	DraggableUIComponent->SetHoverGlow(ColorData.HoverBorderColor);
 	HookMouseEnterEvent(); 
 }
 
 void UUIDraggableBase::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 {
-	DraggableUIComponent->RemoveHoverGlow(Data.ColorData.DefaultBorderColor);
+	DraggableUIComponent->RemoveHoverGlow(ColorData.DefaultBorderColor);
 	HookMouseLeaveEvent();
 }
 
@@ -136,6 +141,8 @@ FReply UUIDraggableBase::NativeOnMouseButtonDown(const FGeometry& InGeometry, co
 {
 	return UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton).NativeReply;
 }
+
+
 
 
 

@@ -5,12 +5,18 @@
 //Component imports.
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/SizeBox.h"
+#include "Components/CanvasPanel.h"
+
+
+//Other imports.
+#include "Items/Abstracts/ItemInstance.h"
+#include "UI/Interactables/Abstracts/GlobalEvents/DraggableTemplates/DraggableTemplates.h"
 
 
 
-void UUIGridInventoryBase::InitializeGrid(int32 X, int32 Y)
-{
-	if (!RootSizeBox) return;
+void UUIGridInventoryBase::InitializeGrid(int32 X, int32 Y, UObject* OwnerObject)
+{ 
+	if (!RootSizeBox || !OwnerObject) return;
 
 	Columns = X;
 	Rows = Y;
@@ -18,6 +24,26 @@ void UUIGridInventoryBase::InitializeGrid(int32 X, int32 Y)
 	FVector2D GridSize = FVector2D(Columns * TileSize, Rows * TileSize);
 	RootSizeBox->SetWidthOverride(GridSize.X);
 	RootSizeBox->SetHeightOverride(GridSize.Y);
+	Owner = OwnerObject;
+}
+
+
+/*
+										    UI event functions.
+*/
+
+void UUIGridInventoryBase::HookDragOverEvent(const FGeometry& InGeometry, const FDragDropEvent& InDragEvent, UDragDropOperation* InOperation)
+{
+	if (UItemInstance* DraggingInstance = DraggableTemplate::GetPayloadInstance<UUIDraggableBase>(InOperation))
+	{
+		const FVector2D LocalMousePosition = InGeometry.AbsoluteToLocal(InDragEvent.GetScreenSpacePosition());
+		const FVector2D DraggedPixelSize = FVector2D(DraggingInstance->GetItemSize() * TileSize);
+		const FVector2D MouseGridOffset = LocalMousePosition - (DraggedPixelSize * 0.5f);
+
+		MouseGridPosition = FIntPoint(
+		FMath::RoundToInt(MouseGridOffset.X / TileSize),
+		FMath::RoundToInt(MouseGridOffset.Y / TileSize));
+    }
 }
 
 

@@ -6,7 +6,7 @@
 
 
 //Custom component imports.
-#include "UI/Player/Components/PlayerMainUIComponent.h"
+#include "UI/Player/Components/PlayerMainUIComponent.h" 
 #include "UI/Player/Components/PlayerUIRegionComponent.h" 
 #include "CustomClasses/Components/Factory/NativeUITemplate.h"
 
@@ -18,10 +18,9 @@ void UUIPlayerMain::NativeConstruct()
 	
 	if (PlayerMainUIComponent = NativeUITemplate::CreateDefaultUIComponent<UPlayerMainUIComponent>(GetWorld(), this))
 	{
+		PlayerUIRegionComponent = NativeUITemplate::CreateDefaultUIComponent<UPlayerUIRegionComponent>(GetWorld(), this);
 		PlayerMainUIComponent->UpdateUISubsystem();
 	}
-	PlayerUIRegionComponent = NativeUITemplate::CreateDefaultUIComponent<UPlayerUIRegionComponent>(GetWorld(), this);
-
 }
 
 
@@ -45,10 +44,10 @@ void UUIPlayerMain::FinishConstruction(APlayerController* PlayerController)
 									 Add event functions.
 */
 
-UUIRegionPanel* UUIPlayerMain::AddToRegion(UUICollectableStorageInventory* InventoryInstance)
+UUIRegionPanel* UUIPlayerMain::AddToRegion(UUIDroppableBase* WidgetToAdd)
 {
-	if (!InventoryInstance || !GroupPanel) return nullptr;
-	return PlayerUIRegionComponent->AddWidgetToRegion(InventoryInstance, GroupPanel);
+	if (!WidgetToAdd || !GroupPanel || !PlayerUIRegionComponent) return nullptr;
+	return PlayerUIRegionComponent->AddToRegion(WidgetToAdd);
 }
 
 
@@ -124,4 +123,9 @@ bool UUIPlayerMain::bIsVisible()
 UUIPlayerEquipmentMain* UUIPlayerMain::GetPlayerEquipmentMain()
 {
 	return UIPlayerEquipmentMain.Get();
+}
+
+UCanvasPanel* UUIPlayerMain::GetGroupPanel()
+{
+	return GroupPanel.Get();
 }

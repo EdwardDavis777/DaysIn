@@ -10,9 +10,9 @@
  
 //Other imports.
 #include "SharedData/Interaction/ItemEquipTag.h" 
-#include "UI/Player/Data/UIEquipSlotData.h"
+#include "UI/Player/Data/UIEquipSlotData.h" 
 
-
+ 
 
 //Engine imports.
 #include "CoreMinimal.h"
@@ -110,15 +110,15 @@ public:
 	                                Virtual event functions.
 	*/
 	virtual void StoreItem(AItemBase* Item, const FIntPoint& Position = FIntPoint(0,0)) override;
-	virtual bool StoreDropped(UItemInstance* ItemInstance) override;
+	virtual bool StoreDropped(UItemInstance* ItemInstance, const FIntPoint& Position = FIntPoint(0, 0)) override;
 	virtual void RemoveStored(TObjectPtr<UItemInstance>& AssocaitedInstance) override;
 	
 
 	/*
 	                               Virtual hook functions.
 	*/
-	virtual void HookDragOverEvent(UDragDropOperation* InOperation) override;
-	virtual void HookDragLeaveEvent() override;
+	virtual void HookDragOverEvent(const FGeometry& InGeometry, const FDragDropEvent& InDragEvent, UDragDropOperation* InOperation) override;
+	virtual void HookDragLeaveEvent(const FDragDropEvent& InDragEvent, UDragDropOperation* InOperation) override;
 	virtual void HookResetEvent() override;
 
 

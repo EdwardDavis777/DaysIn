@@ -9,11 +9,11 @@
 #include "PlayerStorage/Components/CollectableStorageUIComponent.h"
  
 
-//Subsystem imports.
+//Subsystem imports. 
 #include "Subsystems/Player/PlayerEquipmentSubsystem.h"
 
 
-/*
+/* 
 								   Virtual event functions.
 */
 
@@ -23,31 +23,31 @@ void UUIStorageSlot::StoreItem(AItemBase* Item, const FIntPoint& Position)
 
 	if (CollectableStorageInstance = FindAssocaitedInstance<UCollectableStorageInstance>())
 	{
+		PlayerEquipmentSubsystem->PlayerEquipmentDispatches.StorageAdded.Broadcast(CollectableStorageInstance);
 		SlotData.bOccupied = true;
-		PlayerEquipmentSubsystem->AddStorage(CollectableStorageInstance);
 		Item->Pickup();
 	}
 }
 
-bool UUIStorageSlot::StoreDropped(UItemInstance* ItemInstance)
+bool UUIStorageSlot::StoreDropped(UItemInstance* ItemInstance, const FIntPoint& Position)
 {
 	if (UUIEquipSlotBase::StoreDropped(ItemInstance))
 	{
-		CollectableStorageInstance = FindAssocaitedInstance<UCollectableStorageInstance>();
-		CollectableStorageInstance->GetStorageUIComponent()->RebuildInRegion();
-		PlayerEquipmentSubsystem->AddStorage(CollectableStorageInstance);
-		SlotData.bOccupied = true;
-		return true;
+		if (CollectableStorageInstance = FindAssocaitedInstance<UCollectableStorageInstance>())
+		{
+			PlayerEquipmentSubsystem->PlayerEquipmentDispatches.StorageAdded.Broadcast(CollectableStorageInstance);
+			SlotData.bOccupied = true;
+			return true;
+		}
 	}
 	return false;
 }
 
-void UUIStorageSlot::RemoveStored(TObjectPtr<UItemInstance>& AssocaitedInstance)
+void UUIStorageSlot::RemoveStored(TObjectPtr<UItemInstance>& AssociatedInstance)
 {
-	UUIEquipSlotBase::RemoveStored(AssocaitedInstance);
+	UUIEquipSlotBase::RemoveStored(AssociatedInstance);
 
-	PlayerEquipmentSubsystem->RemoveStorage(CollectableStorageInstance);
-	CollectableStorageInstance->GetStorageUIComponent()->ClearInventory();
+	PlayerEquipmentSubsystem->PlayerEquipmentDispatches.StorageRemoved.Broadcast(CollectableStorageInstance);
 	CollectableStorageInstance = nullptr;
 	SlotData.bOccupied = false;
 }

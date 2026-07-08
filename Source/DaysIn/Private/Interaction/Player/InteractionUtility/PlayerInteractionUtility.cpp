@@ -65,11 +65,11 @@ namespace Interact
 	{
 		if (Storages.IsEmpty() || !Item) return;
 
-		for (auto& Storage : Storages)
+		for (auto& Storage : Storages) 
 		{
 			if (Storage || Storage->GetInventoryComponent())
 			{
-				if (Storage->GetInventoryComponent()->bCanStore(Item)) { return; }
+				if (Storage->GetInventoryComponent()->bCheckAndStore(Item)) { return; }
 			}
 		}
 	}

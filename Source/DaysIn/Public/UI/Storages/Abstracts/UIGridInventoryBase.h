@@ -23,7 +23,7 @@
 #include "UIGridInventoryBase.generated.h"
 
 
-
+ 
 
 UCLASS(Abstract)
 class DAYSIN_API UUIGridInventoryBase : public UUIDroppableBase
@@ -42,8 +42,11 @@ public:
 
 		 @param Y: amount of rows you wish to be drawn inside
 		 of a grid.
+
+		 @param OwnerObject: pointer to the object that owns
+		 this inventory.
 	*/
-	virtual void InitializeGrid(int32 X, int32 Y);
+	virtual void InitializeGrid(int32 X, int32 Y, UObject* OwnerObject);
 	
 
 protected:
@@ -66,6 +69,19 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "GridData| Runtime")
 	int32 Rows = 0;
 
+	UPROPERTY(VisibleAnywhere, Category = "GridData| Runtime")
+	FIntPoint MouseGridPosition = FIntPoint();
+
+	UPROPERTY(VisibleAnywhere, Category = "GridData| Runtime")
+	TObjectPtr<UObject> Owner;
+
+
+
+	/*
+	                                    UI event functions.
+	*/
+	virtual void HookDragOverEvent(const FGeometry& InGeometry, const FDragDropEvent& InDragEvent, UDragDropOperation* InOperation) override;
+
 
 	/*
 	                                  Paint event functions.
@@ -74,6 +90,35 @@ protected:
 	FSlateWindowElementList& OutDrawElements, int32 LayerId, const FWidgetStyle& InWidgetStyle, 
 	bool bParentEnabled) const override;
 
+
+
+
+	/*
+	                                   Generic accessors.
+	*/
+
+	/*
+	     Performs a safe cast to the cached owner using the class type 
+		 provided by the caller. 
+
+		 @tparam: T must be a UObject or the compiler will 
+		 scream at you.
+
+		 @return UObject: pointer to some UObject class instance with the class
+		 type provied by the caller.
+	*/
+	template<typename TOwner>
+	TOwner* FindOwner()
+	{
+		if (!Owner) return nullptr;
+
+		static_assert(TIsDerivedFrom<TOwner, UObject>::IsDerived, "T must be a UObject");
+		if (TOwner* OwnerInstance = Cast<TOwner>(Owner))
+		{
+			return OwnerInstance;
+		}
+		return nullptr;
+	}
 public:
 
 	/*

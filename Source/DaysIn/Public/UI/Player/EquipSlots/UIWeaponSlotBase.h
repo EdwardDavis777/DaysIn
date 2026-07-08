@@ -37,6 +37,6 @@ public:
 	                             Virtual event functions.
 	*/
 	virtual void StoreItem(AItemBase* Item, const FIntPoint& Position = FIntPoint(0,0)) override;
-	virtual bool StoreDropped(UItemInstance* ItemInstance) override;
+	virtual bool StoreDropped(UItemInstance* ItemInstance, const FIntPoint& Position = FIntPoint(0, 0)) override;
 	virtual void RemoveStored(TObjectPtr<UItemInstance>& AssociatedInstance) override;
 };

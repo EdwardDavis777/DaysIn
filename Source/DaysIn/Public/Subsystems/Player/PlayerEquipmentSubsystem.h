@@ -6,11 +6,14 @@
 */
 
 
+//Other imports.
+#include "Dispatches/PlayerEquipmentDispatches.h"
+
 
 //Engine imports.
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "PlayerEquipmentSubsystem.generated.h"
+#include "PlayerEquipmentSubsystem.generated.h" 
 
 
 
@@ -29,38 +32,44 @@ class DAYSIN_API UPlayerEquipmentSubsystem : public UGameInstanceSubsystem
 private:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
+	void BindDelegates();
 
 
 	/*
 	                               Cached data.
 	*/
 	UPROPERTY()
-	TArray<TObjectPtr<UCollectableStorageInstance>> PlayerStorages;
+  	TArray<TObjectPtr<UCollectableStorageInstance>> PlayerStorages;
 
-public:
+	 
 
 	/*
-	                             Cache mutators.
+	                        Equipment event functions.
 	*/
-	
+
 	/*
-	     Adds the passed storage pointer to the subsystems external 
+		 Adds the passed storage pointer to the subsystems external
 		 player storage cache.
 
-		 @param Storage: pointer to the storage you wish to 
+		 @param Storage: pointer to the storage you wish to
 		 cache.
 	*/
 	void AddStorage(UCollectableStorageInstance* Storage);
 
 
 	/*
-	    Removes the passed storage pointer from the subsystems external
+		Removes the passed storage pointer from the subsystems external
 		player storage cache.
 
 		@param Storage: pointer to the storage you wish to remove
 		from the subsystem cache.
 	*/
 	void RemoveStorage(UCollectableStorageInstance* Storage);
+
+
+
+public:
+	FPlayerEquipmentDelegates PlayerEquipmentDispatches;
 
 
 	/*

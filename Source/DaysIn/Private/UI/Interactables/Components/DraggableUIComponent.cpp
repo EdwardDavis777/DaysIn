@@ -58,6 +58,8 @@ void UDraggableUIComponent::MakeDragWidget(UDragDropOperation* InOperation,UUIDr
 		SetDragWidgetSize(Drag, OwnerInstance);
 		InOperation->DefaultDragVisual = Drag;
 		InOperation->Payload = Drag;
+		InOperation->Pivot = EDragPivot::CenterCenter;
+		InOperation->Offset = FVector2D::ZeroVector;
 	}
 }
 
@@ -115,7 +117,7 @@ void UDraggableUIComponent::CopyDefaults(UUIDraggableBase* Reference, UUIDraggab
 {
 	if (!Reference || !Copy || !OwnerInstance) return;
 
-	Copy->GetBorder()->SetBrushColor(Reference->GetData().ColorData.DragBorderColor);
+	Copy->GetBorder()->SetBrushColor(Reference->ColorData.DragBorderColor);
 	Copy->GetImage()->SetBrush(Reference->GetImage()->GetBrush());
 	Copy->Init(OwnerInstance);
 }

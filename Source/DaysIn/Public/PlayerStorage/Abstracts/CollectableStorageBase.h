@@ -12,7 +12,7 @@
 #include "Items/Abstracts/ItemBase.h"
 #include "CollectableStorageBase.generated.h"
 
-
+ 
 
 //Forward declares.
 class UCollectableStorageDataAsset;

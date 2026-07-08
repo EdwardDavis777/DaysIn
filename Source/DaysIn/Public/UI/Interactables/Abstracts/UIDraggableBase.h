@@ -9,7 +9,7 @@
 //Other imports.
 #include "UI/Interactables/AbstractData/UIDraggableData.h"
 
-
+ 
 //Engine imports.
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
@@ -55,6 +55,12 @@ protected:
 	TObjectPtr<UImage> DragIcon;
 
 
+	/*
+									Data structs.
+	*/
+	UPROPERTY(EditAnywhere, Category = "Data")
+	FData Data;
+
 
 
 	/*
@@ -71,14 +77,6 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UPlayerUISubsystem> PlayerUISubsystem;
-
-
-	/*
-	                                    Data structs.
-	*/
-	UPROPERTY(EditAnywhere, Category = "Data")
-	FData Data;
-
 
 
 
@@ -120,6 +118,12 @@ protected:
 	}
 public: 
 
+   
+	/*
+									Data structs.
+    */
+	UPROPERTY(EditAnywhere, Category = "Data| Configurations")
+	FColorData ColorData;
 
 
 
@@ -147,6 +151,9 @@ public:
 		with this draggable widget.
 	*/
 	virtual void Init(AItemBase* RawItem);
+
+
+
 
 
 	/*
@@ -184,6 +191,7 @@ public:
 	virtual void HookResetEvent();
 
 
+	
 
 	/*
 	                                     Mutators.

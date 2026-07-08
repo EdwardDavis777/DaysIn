@@ -10,7 +10,7 @@
 #include "Items/Abstracts/ItemBase.h" 
 
  
-//Widget imports.
+//Widget imports. 
 #include "UI/Items/Abstracts/UIItemIconBase.h"
 
 
@@ -58,7 +58,7 @@ void UUIEquipSlotBase::StoreItem(AItemBase* Item, const FIntPoint& Position)
 }
 
 
-bool UUIEquipSlotBase::StoreDropped(UItemInstance* ItemInstance)
+bool UUIEquipSlotBase::StoreDropped(UItemInstance* ItemInstance, const FIntPoint& Position)
 {
 	if (!ItemInstance) return false;
 	
@@ -90,13 +90,13 @@ void UUIEquipSlotBase::RemoveStored(TObjectPtr<UItemInstance>& AssocaitedInstanc
 								    Virtual hook functions.
 */
 
-void UUIEquipSlotBase::HookDragOverEvent(UDragDropOperation* InOperation)
+void UUIEquipSlotBase::HookDragOverEvent(const FGeometry& InGeometry, const FDragDropEvent& InDragEvent, UDragDropOperation* InOperation)
 {
 	if (!InOperation) return;
 	EquipSlotUIComponent->HandleHoverOver(InOperation, SlotColorData.CanPlaceColor);
 }
 
-void UUIEquipSlotBase::HookDragLeaveEvent()
+void UUIEquipSlotBase::HookDragLeaveEvent(const FDragDropEvent& InDragEvent, UDragDropOperation* InOperation)
 {
 	EquipSlotUIComponent->ResetBorder(SlotColorData.DefaultBorderColor);
 }

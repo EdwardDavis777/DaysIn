@@ -9,9 +9,9 @@
 
 //Custom components.
 #include "Items/Components/ItemPhysicsComponent.h"
-#include "PlayerStorage/Components/CollectableStorageUIComponent.h"
 
 
+ 
 
 void ACollectableStorageBase::PostInitializeComponents()
 {
@@ -32,10 +32,6 @@ void ACollectableStorageBase::PostInitializeComponents()
 
 void ACollectableStorageBase::Pickup()
 {
-	if (!CollectableStorageDataAsset || !CollectableStorageInstance) return;
-
-	CollectableStorageInstance->GetStorageUIComponent()->MakeInventory(CollectableStorageDataAsset->CollectableStorageProperties.StorageSize.X, 
-	CollectableStorageDataAsset->CollectableStorageProperties.StorageSize.Y);
 	Destroy();
 }
 
