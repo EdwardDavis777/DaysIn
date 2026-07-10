@@ -7,7 +7,7 @@
 
 */
 
- 
+  
 
 //Engine imports.
 #include "CoreMinimal.h"
@@ -20,6 +20,7 @@
 class UCollectableStorageInstance;
 class UStorageInventorySubsystem;
 class AItemBase;
+class UItemInstance;
 
 
 
@@ -32,7 +33,7 @@ public:
 	virtual void Initialize(UWorld* WorldContext, UObject* OwnerObject) override;
 	
 
-
+	 
 	/*
 	                              Mutators.
 	*/

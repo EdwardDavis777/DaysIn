@@ -8,9 +8,9 @@
 */
 
 
-//Engine imports.
+//Engine imports. 
 #include "CoreMinimal.h"
-#include "CustomClasses/Components/NativeUIComponent.h"
+#include "CustomClasses/Components/NativeUIComponent.h" 
 #include "StorageUIInventoryComponent.generated.h"
 
 

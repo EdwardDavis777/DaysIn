@@ -51,6 +51,7 @@ public:
 		 @param EventOwner: pointer to the widget instance that owns
 		 the store event.
 
+
 		 @return UUIDraggableBase: pointer to the constructed 
 		 widget back to the caller.
 	*/

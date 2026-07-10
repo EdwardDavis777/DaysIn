@@ -5,11 +5,13 @@
       Defines class defaults for item run-time instances; each item that implements some sort of logic at 
 	  run-time will have a derived instance from this class.
 */
-
+ 
 
  
 //Other imports.
+#include "Items/Data/ItemRuntimeData.h"
 #include "SharedData/Interaction/ItemEquipTag.h" 
+
 
 //Engine imports.
 #include "CoreMinimal.h" 
@@ -22,6 +24,7 @@
 class UItemDataAsset;
 class UUIDraggableBase;
 class AItemBase;
+class UInstanceUIRuntimeComponent;
 
 
 UCLASS()
@@ -48,21 +51,39 @@ public:
 	                                  Accessors.
 	*/
 	TObjectPtr<UItemDataAsset>& GetStaticItemData();
+	FItemRunTimeData& GetItemRuntimeData();
 	const FIntPoint GetItemSize() const;
+	const FIntPoint GetItemUIRotation() const;
+	const FIntPoint GetDynamicUISize() const;
+	bool bRotated();
 	const FText GetUIName() const;
 	const EEquipTag GetEquipTag() const;
 	const TSubclassOf<AItemBase>& GetItemClass() const;	
 	UTexture2D* GetItemIcon();
 	TSubclassOf<UUIDraggableBase>& GetIconClass();
+	TObjectPtr<UInstanceUIRuntimeComponent>& GetUIRuntimeComponent();
 
 protected:
 
 	/*
-							   UItemInstance components.
+	                                    Data.
 	*/
-    UPROPERTY()
+	UPROPERTY()
 	TObjectPtr<UItemDataAsset> StaticItemData;
 
+	UPROPERTY(SaveGame)
+	FItemRunTimeData ItemRuntimeData;
+
+	/*
+	                                Custom components.
+	*/
+	UPROPERTY()
+	TObjectPtr<UInstanceUIRuntimeComponent> UIRuntimeComponent;
+
+
+	/*
+							          Components.
+	*/
     UPROPERTY()
 	TObjectPtr<UWorld> World;
 
@@ -70,7 +91,6 @@ protected:
 	/*
 								  Template accessors.
     */
-
 
    /*
 		Gets an items data asset with the type passed by the caller.

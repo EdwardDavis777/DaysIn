@@ -20,6 +20,7 @@ class UDragDropOperation;
 class UItemInstance;
 class UPlayerUISubsystem;
 
+ 
 
 UCLASS()
 class DAYSIN_API UDraggableUIComponent : public UNativeUIComponent
@@ -42,8 +43,7 @@ public:
 	*/
 	void InitDefaults(UUIDraggableBase* DragInstance, UItemInstance* Instance);
 
-
-
+    
 	/*
 	     Creates a copied widget for drag visuals using the event owner as a 
 		 reference.
@@ -61,6 +61,33 @@ public:
 
 
 	/*
+	      Handles rotating, and setting the current state of a dragging widget.
+		  If its currently rotating, it will set the dragging widgets state for later
+		  drop events, or reset the rotation of the dragging widget.
+
+		  @param AssocaitedInstance: pointer to the assocaited item instance
+		  for the dragging widget.
+
+		  @param DraggingWidget: pointer to the current dragging
+		  widget.
+
+		  @param bRotated: truthy whether the widget has been rotated, or reset
+		  to a default state.
+	*/
+	void HandleRotation(UItemInstance* AssocaitedInstance, UUIDraggableBase* DraggingWidget, bool bRotated);
+
+
+	/*
+		 Simply ensures that dragged instances have default settings triggered during
+		 a drag event. Such as resetting rotation states etc.
+
+		 @param InOperation: pointer to the current drag and
+		 drop event
+	*/
+	void HandleDragDefaults(UDragDropOperation* InOperation);
+
+
+	/*
 	     Triggeres a force spawn event if a drag is interrupted for some 
 		 reason.
 
@@ -72,8 +99,6 @@ public:
 	*/
 	void HandleDragCancelled(UDragDropOperation* InOperation, UPlayerUISubsystem* PlayerUISubsystem);
     
-
-
 
 
 	/*
@@ -108,6 +133,7 @@ public:
 	/*
 	                                 Helper functions. 
 	*/
+
 	/*
 	    Sets the size of a drag widget from its item instance data.
 

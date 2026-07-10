@@ -7,7 +7,7 @@
 
 
 //Engine imports.
-#include "CoreMinimal.h"
+#include "CoreMinimal.h" 
 #include "Input/Abstracts/InputStreamBaseComponent.h"
 #include "PlayerUIInput.generated.h"
 
@@ -17,7 +17,10 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+
 class UPlayerUISubsystem;
+class UUISubsystem;
+
 
 
 UCLASS()
@@ -30,14 +33,19 @@ private:
 	virtual void CreateInputStream(UInputComponent* InputComponent, APlayerController* PlayerController) override;
 
 
-   /*
+    /*
                                    UPlayerUIInput input components.
-   */
+    */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputMappingContext> MappingContext;
 
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> ToggleUIMainAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> RotateAction;
+
 
 
 	/*
@@ -46,11 +54,14 @@ private:
 	UPROPERTY()
 	TObjectPtr<UPlayerUISubsystem> PlayerUISubsystem;
 
+	UPROPERTY();
+	TObjectPtr<UUISubsystem> UISubsystem;
 
 	/*
 	                                  UI input event functions.
 	*/
 	void ToggleUIMain(const FInputActionValue& InputValue);
+	void RotateDraggingItem(const FInputActionValue& InputValue);
 
 
 

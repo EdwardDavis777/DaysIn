@@ -13,6 +13,14 @@
 #include "Subsystems/Player/PlayerEquipmentSubsystem.h"
 
 
+/*
+
+      TODO: Start working on either rotating and stacking items, 
+	  or saving items in the inventory.
+
+	  
+*/
+
 
 void UPlayerCollectionComponent::BeginPlay()
 {

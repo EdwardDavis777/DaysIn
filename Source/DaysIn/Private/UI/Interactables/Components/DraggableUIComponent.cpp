@@ -7,12 +7,14 @@
 #include "Components/Border.h"
 #include "Components/Image.h"
 #include "Components/SizeBox.h"
-
+ 
 
 
 //Other imports.
 #include "Items/Abstracts/ItemInstance.h"
-
+#include "Items/Components/InstanceUIRuntimeComponent.h"
+#include "UI/Interactables/Abstracts/GlobalEvents/DraggableTemplates/DraggableTemplates.h"
+#include "UI/GlobalActions/TransformAction.h"
 
 
 //Static data imports.
@@ -63,16 +65,45 @@ void UDraggableUIComponent::MakeDragWidget(UDragDropOperation* InOperation,UUIDr
 	}
 }
 
+void UDraggableUIComponent::HandleRotation(UItemInstance* AssocaitedInstance, UUIDraggableBase* DraggingWidget, bool bRotated)
+{
+	if (DraggableWidget->GetAssocaitedInstance() == AssocaitedInstance)
+	{
+		if (bRotated)
+		{
+			Transform::Rot::RotNeg90(DraggingWidget);
+			DraggingWidget->SetRotated(true);
+		}
+		else
+		{
+			Transform::Rot::Rot0(DraggingWidget);
+			DraggingWidget->SetRotated(false);
+		}
+	}
+}
+
+
+void UDraggableUIComponent::HandleDragDefaults(UDragDropOperation* InOperation)
+{
+	if (!InOperation) return;
+
+	auto* ItemInstance = DraggableTemplate::GetPayloadInstance<UUIDraggableBase>(InOperation);
+	auto* DragInst = DraggableTemplate::GetPayload<UUIDraggableBase>(InOperation);
+
+	if (ItemInstance && DragInst)
+	{
+		ItemInstance->GetUIRuntimeComponent()->ResetRotated(ItemInstance);
+		DragInst->SetRotated(false);
+	}
+}
+
 void UDraggableUIComponent::HandleDragCancelled(UDragDropOperation* InOperation, UPlayerUISubsystem* PlayerUISubsystem)
 {
 	if (!InOperation || !PlayerUISubsystem) return;
 
-	if (auto* Drag = Cast<UUIDraggableBase>(InOperation->Payload))
+	if (auto* DragInst = DraggableTemplate::GetPayloadInstance<UUIDraggableBase>(InOperation))
 	{
-		if (auto* DragInst = Cast<UItemInstance>(Drag->GetAssocaitedInstance()))
-		{
-			PlayerUISubsystem->PlayerUISubsystemDispatches.ForceSpawnActor.Broadcast(DragInst);
-		}
+		PlayerUISubsystem->PlayerUISubsystemDispatches.ForceSpawnActor.Broadcast(DragInst);
 	}
 }
 

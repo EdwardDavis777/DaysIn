@@ -5,7 +5,7 @@
 //Other imports.
 #include "PlayerStorage/Data/CollectableStorageDataAsset.h"
 
-
+ 
 //Custom components.
 #include "PlayerStorage/Components/CollectableStorageUIComponent.h"
 #include "PlayerStorage/Components/StorageInventoryComponent.h"

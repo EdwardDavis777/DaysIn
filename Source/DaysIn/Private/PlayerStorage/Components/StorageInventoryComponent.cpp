@@ -4,7 +4,7 @@
 
 
 //Other imports.
-#include "PlayerStorage/Abstracts/CollectableStorageInstance.h"
+#include "PlayerStorage/Abstracts/CollectableStorageInstance.h" 
 #include "Items/Abstracts/ItemBase.h"
 
 #include "PlayerStorage/Components/CollectableStorageUIComponent.h"
@@ -46,7 +46,7 @@ void UStorageInventoryComponent::AddItem(UItemInstance* Instance, const int32& O
 {
 	if (!Instance || !StorageInventorySubsystem) return;
 
-	const FIntPoint ItemSize = Instance->GetItemSize();
+	const FIntPoint ItemSize = Instance->GetDynamicUISize();
 	const FIntPoint Tile = IndexToTile(Origin);
 
 	for (int32 xPos{ Tile.X }; xPos < Tile.X + ItemSize.X; xPos++)
@@ -82,7 +82,7 @@ void UStorageInventoryComponent::RemoveItem(UItemInstance* Instance)
 
 bool UStorageInventoryComponent::bCheckAndStore(UItemInstance* Instance, FIntPoint Position)
 {
-	if (!Instance) return false;
+	if (!Instance) return false; 
 
 	int32 Index = TileToIndex(Position);
 	if (bCanStore(Instance, Index))
@@ -119,7 +119,7 @@ bool UStorageInventoryComponent::bCanStore(UItemInstance* Instance, int32 Origin
 {
 	if (!Instance) return false;
 	
-	const FIntPoint ItemSize = Instance->GetItemSize();
+	const FIntPoint ItemSize = Instance->GetDynamicUISize();
 	const FIntPoint Tile = IndexToTile(Origin);
 
 	for (int32 xPos{ Tile.X }; xPos < Tile.X + ItemSize.X; xPos++)
@@ -141,7 +141,7 @@ bool UStorageInventoryComponent::bCanStore(UItemInstance* Instance, const FIntPo
 {
 	if (!Instance) return false;
 
-	const FIntPoint ItemSize = Instance->GetItemSize();
+	const FIntPoint ItemSize = Instance->GetDynamicUISize();
 
 	for (int32 xPos{ Position.X }; xPos < Position.X + ItemSize.X; xPos++)
 	{

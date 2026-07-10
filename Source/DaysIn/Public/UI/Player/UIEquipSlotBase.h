@@ -10,7 +10,7 @@
  
 //Other imports.
 #include "SharedData/Interaction/ItemEquipTag.h" 
-#include "UI/Player/Data/UIEquipSlotData.h" 
+#include "UI/Player/Data/UIEquipSlotData.h"  
 
  
 

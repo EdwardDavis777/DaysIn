@@ -5,10 +5,10 @@
 //Component imports.
 #include "Components/Border.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
-#include "Components/SizeBox.h"
+#include "Components/SizeBox.h" 
 
 
- 
+  
 //Other imports.
 #include "Items/Abstracts/ItemBase.h"
 
@@ -23,7 +23,7 @@
 
 
 //Subsystem imports.
-#include "Subsystems/UI/UIDraggableSubsystem.h"
+#include "Subsystems/UI/UISubsystem.h"
 #include "Subsystems/Player/PlayerUISubsystem.h"
 
 
@@ -34,14 +34,14 @@ void UUIDraggableBase::NativeConstruct()
 	Super::NativeConstruct();
 	
 	DraggableUIComponent = NativeUITemplate::CreateDefaultUIComponent<UDraggableUIComponent>(GetWorld(), this);
-	DraggableSubsystem = SubUtility::FindSub<UUIDraggableSubsystem>(GetWorld());
+	UISubsystem = SubUtility::FindSub<UUISubsystem>(GetWorld());
 	PlayerUISubsystem = SubUtility::FindSub<UPlayerUISubsystem>(GetWorld());
-
+	BindDelegates();
+	
 	if (MainBorder)
 	{
 		ColorData.DefaultBorderColor = MainBorder->GetBrushColor();
-	}
-	BindDelegates();
+	}	
 }
 
 
@@ -52,13 +52,17 @@ void UUIDraggableBase::NativeDestruct()
 
 void UUIDraggableBase::BindDelegates()
 {
-	if (!PlayerUISubsystem) return;
+	if ( !UISubsystem || !PlayerUISubsystem) return;
+
+	UISubsystem->UISubsystemDispatches.ForwardRotatedItem.AddUObject(this, &UUIDraggableBase::RotateDrag);
 	PlayerUISubsystem->PlayerUISubsystemDispatches.UIMainOutRender.AddUObject(this, &UUIDraggableBase::HookResetEvent);
 }
 
 void UUIDraggableBase::UnBindDelegates()
 {
-	if (!PlayerUISubsystem) return;
+	if (!UISubsystem || !PlayerUISubsystem) return;
+
+	UISubsystem->UISubsystemDispatches.ForwardRotatedItem.RemoveAll(this);
 	PlayerUISubsystem->PlayerUISubsystemDispatches.UIMainOutRender.RemoveAll(this);
 }
 
@@ -74,7 +78,7 @@ void UUIDraggableBase::Init(UItemInstance* Instance)
 	if (!Instance) return;
 
 	Data.RuntimeData.GeneralInstance = Instance;
-	DraggableUIComponent->InitDefaults(this, Instance);
+	DraggableUIComponent->InitDefaults(this, Instance); 
 }
 
 void UUIDraggableBase::Init(AItemBase* RawItem)
@@ -92,7 +96,11 @@ void UUIDraggableBase::Init(AItemBase* RawItem)
 							        Virtual hook functions.
 */
 
-void UUIDraggableBase::HookDragEvent(){}
+void UUIDraggableBase::HookDragEvent(const FGeometry& InGeometry,const FPointerEvent& InMouseEvent,UDragDropOperation* InOperation)
+{
+	if (!InOperation) return;
+	DraggableUIComponent->HandleDragDefaults(InOperation);
+}
 void UUIDraggableBase::HookMouseEnterEvent(){}
 void UUIDraggableBase::HookMouseLeaveEvent(){}
 void UUIDraggableBase::HookResetEvent()
@@ -114,8 +122,8 @@ void UUIDraggableBase::NativeOnDragDetected(const FGeometry& InGeometry, const F
 		DraggableUIComponent->MakeDragWidget(DragOperation, this, Data.RuntimeData.GeneralInstance);
 		InOperation = DragOperation;
 
-		HookDragEvent();
-		DraggableSubsystem->DraggableDispatches.DragEventTriggered.Broadcast(Data.RuntimeData.GeneralInstance);
+		HookDragEvent(InGeometry,InMouseEvent,InOperation);
+		UISubsystem->UISubsystemDispatches.ForwardDragOperation.Broadcast(InOperation);
 	}
 }
 
@@ -137,10 +145,17 @@ void UUIDraggableBase::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 	HookMouseLeaveEvent();
 }
 
+void UUIDraggableBase::RotateDrag(UItemInstance* AssocaitedInstance, UUIDraggableBase* DraggingWidget, bool bRotated)
+{
+	if (!AssocaitedInstance || !DraggingWidget) return;
+	DraggableUIComponent->HandleRotation(AssocaitedInstance, DraggingWidget, bRotated);
+}
+
 FReply UUIDraggableBase::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	return UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton).NativeReply;
 }
+
 
 
 
@@ -160,6 +175,10 @@ void UUIDraggableBase::RemoveFromRender()
 	SetVisibility(ESlateVisibility::Collapsed);
 }
 
+void UUIDraggableBase::SetRotated(bool bRotated)
+{
+	Data.RuntimeData.bRotated = bRotated;
+}
 
 
 
@@ -175,6 +194,7 @@ USizeBox* UUIDraggableBase::GetSizeBox()
 const FVector2D UUIDraggableBase::GetSizeBoxSize() const
 {
 	if (!RootSizeBox) return FVector2D::ZeroVector;
+	
 	const FVector2D Size = FVector2D(RootSizeBox->GetWidthOverride(), RootSizeBox->GetHeightOverride());
 	return Size;
 }
@@ -194,6 +214,11 @@ const bool UUIDraggableBase::bVisible() const
 	return GetVisibility() == ESlateVisibility::Visible;
 }
 
+const bool UUIDraggableBase::bRotated() const
+{
+	return Data.RuntimeData.bRotated;
+}
+
 UItemInstance* UUIDraggableBase::GetAssocaitedInstance() const
 {
 	return Data.RuntimeData.GeneralInstance.Get();
@@ -202,4 +227,9 @@ UItemInstance* UUIDraggableBase::GetAssocaitedInstance() const
 const FData& UUIDraggableBase::GetData() const
 {
 	return Data;
+}
+
+UImage* UUIDraggableBase::GetDragIcon()
+{
+	return DragIcon.Get();
 }

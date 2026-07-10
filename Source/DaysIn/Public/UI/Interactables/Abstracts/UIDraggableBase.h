@@ -1,6 +1,6 @@
 #pragma once
 
-/*
+/* 
      Defines class defaults for all draggable widgets used
 	 in user interfaces.
 */
@@ -8,7 +8,7 @@
 
 //Other imports.
 #include "UI/Interactables/AbstractData/UIDraggableData.h"
-
+  
  
 //Engine imports.
 #include "CoreMinimal.h"
@@ -24,8 +24,12 @@ class UCanvasPanel;
 class UImage;
 class UDraggableUIComponent;
 class AItemBase;
-class UUIDraggableSubsystem;
 class UPlayerUISubsystem;
+class UUISubsystem;
+
+
+
+
 
 
 UCLASS(Abstract)
@@ -58,7 +62,7 @@ protected:
 	/*
 									Data structs.
 	*/
-	UPROPERTY(EditAnywhere, Category = "Data")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Data")
 	FData Data;
 
 
@@ -69,11 +73,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Component")
 	TObjectPtr<UDraggableUIComponent> DraggableUIComponent;
 
+
+	 
 	/*
-	                                  Cache components.
+	                                   Cache components.
 	*/
 	UPROPERTY()
-	TObjectPtr<UUIDraggableSubsystem> DraggableSubsystem;
+	TObjectPtr<UUISubsystem> UISubsystem;
 
 	UPROPERTY()
 	TObjectPtr<UPlayerUISubsystem> PlayerUISubsystem;
@@ -81,14 +87,15 @@ protected:
 
 
 	/*
-	                          Engine UI interact event functions.
+	                           Engine UI interact event functions.
 	*/
 	virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& InOperation) override;
 	virtual void NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
+	void RotateDrag(UItemInstance* AssocaitedInstance, UUIDraggableBase* DraggingWidget,bool bRotated);
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGoemetry, const FPointerEvent& InMouseEvent) override;
-
+	
 
 
 	/*
@@ -164,8 +171,18 @@ public:
 	     Allows derived classes the ability to hook into their assocaited drag 
 		 event initialized from the base. Override this function
 		 and implement logic you wish to happen during drag events.
-	*/
-	virtual void HookDragEvent();
+	
+          
+         @param InGeometry: reference to the cached geometry
+	 	 during a drag event.
+
+		 @param InMouseEvent: reference to the cached mouse/pointer
+		 event during a drag event.
+
+		 @param InOperation: pointer to the current drag and drop
+		 operation.
+  	*/
+	virtual void HookDragEvent(const FGeometry& InGeometry,const FPointerEvent& InMouseEvent,UDragDropOperation* InOperation);
 
 
 	/*
@@ -198,7 +215,7 @@ public:
 	*/
 	void AddToRender();
 	void RemoveFromRender();
-
+	void SetRotated(bool bRotated);
 
 
 
@@ -212,6 +229,8 @@ public:
 	TObjectPtr<UBorder> GetBorder();
 	TObjectPtr<UImage> GetImage();
 	UItemInstance* GetAssocaitedInstance() const;
+	UImage* GetDragIcon();
 	const bool bVisible() const;
+	const bool bRotated() const;
 	const FData& GetData() const;
 };

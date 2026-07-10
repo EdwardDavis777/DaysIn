@@ -5,6 +5,11 @@
 #include "Items/Data/Abstracts/ItemDataAsset.h"
 
 
+//Custom component imports.
+#include "Items/Components/InstanceUIRuntimeComponent.h"
+#include "CustomClasses/Components/Factory/GameplayComponentTemplate.h"
+
+
 
 void UItemInstance::Initialize(UWorld* WorldContext, UItemDataAsset* ItemData)
 { 
@@ -12,6 +17,7 @@ void UItemInstance::Initialize(UWorld* WorldContext, UItemDataAsset* ItemData)
 
 	World = WorldContext;
 	StaticItemData = ItemData;
+	UIRuntimeComponent = GameplayTemplate::CreateDefaultGameplayComponent<UInstanceUIRuntimeComponent>(World,this);
 } 
 
 
@@ -26,9 +32,34 @@ TObjectPtr<UItemDataAsset>& UItemInstance::GetStaticItemData()
 	return StaticItemData;
 }
 
+FItemRunTimeData& UItemInstance::GetItemRuntimeData()
+{
+	return ItemRuntimeData;
+}
+
 const FIntPoint UItemInstance::GetItemSize() const
 {
 	return StaticItemData->ItemUIProperties.ItemSize;
+}
+
+const FIntPoint UItemInstance::GetItemUIRotation() const
+{
+	return ItemRuntimeData.ItemUIRuntimeData.RotatedSize;
+}
+
+const FIntPoint UItemInstance::GetDynamicUISize() const
+{
+	const auto& UIData = ItemRuntimeData.ItemUIRuntimeData;
+	if (UIData.bItemRotated)
+	{
+		return UIData.RotatedSize;
+	}
+	return StaticItemData->ItemUIProperties.ItemSize;
+}
+
+bool UItemInstance::bRotated()
+{
+	return ItemRuntimeData.ItemUIRuntimeData.bItemRotated;
 }
 
 const FText UItemInstance::GetUIName() const
@@ -54,4 +85,9 @@ UTexture2D* UItemInstance::GetItemIcon()
 TSubclassOf<UUIDraggableBase>& UItemInstance::GetIconClass()
 {
 	return StaticItemData->ItemUIProperties.IconClass;
+}
+
+TObjectPtr<UInstanceUIRuntimeComponent>& UItemInstance::GetUIRuntimeComponent()
+{
+	return UIRuntimeComponent;
 }

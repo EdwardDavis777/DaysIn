@@ -5,10 +5,10 @@
 #include "Components/CanvasPanel.h"
 
 
-//Other imports.
+//Other imports. 
 #include "PlayerStorage/Abstracts/CollectableStorageInstance.h"
 
-
+ 
 //Custom component imports.
 #include "UI/Storages/Components/StorageUIInventoryComponent.h"
 #include "CustomClasses/Components/Factory/NativeUITemplate.h"

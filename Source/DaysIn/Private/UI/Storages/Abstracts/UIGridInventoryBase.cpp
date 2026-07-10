@@ -11,7 +11,7 @@
 //Other imports.
 #include "Items/Abstracts/ItemInstance.h"
 #include "UI/Interactables/Abstracts/GlobalEvents/DraggableTemplates/DraggableTemplates.h"
-
+ 
 
 
 void UUIGridInventoryBase::InitializeGrid(int32 X, int32 Y, UObject* OwnerObject)
@@ -37,7 +37,7 @@ void UUIGridInventoryBase::HookDragOverEvent(const FGeometry& InGeometry, const 
 	if (UItemInstance* DraggingInstance = DraggableTemplate::GetPayloadInstance<UUIDraggableBase>(InOperation))
 	{
 		const FVector2D LocalMousePosition = InGeometry.AbsoluteToLocal(InDragEvent.GetScreenSpacePosition());
-		const FVector2D DraggedPixelSize = FVector2D(DraggingInstance->GetItemSize() * TileSize);
+		const FVector2D DraggedPixelSize = FVector2D(DraggingInstance->GetDynamicUISize() * TileSize);
 		const FVector2D MouseGridOffset = LocalMousePosition - (DraggedPixelSize * 0.5f);
 
 		MouseGridPosition = FIntPoint(

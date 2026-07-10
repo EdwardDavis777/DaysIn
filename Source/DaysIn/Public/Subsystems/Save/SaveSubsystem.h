@@ -6,7 +6,7 @@
 	 Only subsystems that actually trigger save events at 
 	 run-time.
 
-*/
+*/ 
 
 
 //Subsystem imports.
@@ -25,7 +25,7 @@
 class USaveGame;
 class UPlayerUISubsystem;
 class UPlayerEquipmentSubsystem;
-
+class UItemEventSubsystem;
 
 UCLASS()
 class DAYSIN_API USaveSubsystem : public UGameInstanceSubsystem
@@ -49,6 +49,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UPlayerEquipmentSubsystem> PlayerEquipmentSubsystem;
+
+	UPROPERTY()
+	TObjectPtr<UItemEventSubsystem> ItemEventSubsystem;
 
 
 	/*

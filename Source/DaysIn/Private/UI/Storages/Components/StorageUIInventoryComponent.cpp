@@ -6,9 +6,9 @@
 
 //Widget imports.
 #include "UI/Storages/Abstracts/UICollectableStorageInventory.h"
-#include "UI/Interactables/Abstracts/UIDraggableBase.h"
+#include "UI/Interactables/Abstracts/UIDraggableBase.h" 
 
-
+ 
 //Other imports.
 #include "PlayerStorage/Abstracts/CollectableStorageInstance.h"
 #include "PlayerStorage/Components/StorageInventoryComponent.h"
@@ -30,7 +30,7 @@ void UStorageUIInventoryComponent::Initialize(UWorld* WorldContext, UUserWidget*
 /*
 							         Inventory event functions.
 */
-
+ 
 
 void UStorageUIInventoryComponent::HandleAddEvent(UObject* StorageObject, UObject* AddedInstance, const FIntPoint& Position, UCollectableStorageInstance* StorageInstance)
 {
@@ -81,8 +81,6 @@ bool UStorageUIInventoryComponent::HandleDropped(UItemInstance* Instance, UColle
 	if (!Instance || !StorageInstance) return false;
 	return StorageInstance->GetInventoryComponent()->bCheckAndStore(Instance, DroppedGridPosition);
 }
-
-
 
 
 void UStorageUIInventoryComponent::HandleRemove(TMap<TObjectPtr<UItemInstance>,TObjectPtr<UUIDraggableBase>>& StoredWidgets, TObjectPtr<UItemInstance>& AssocaitedInstance, UCollectableStorageInstance* StorageInstance)

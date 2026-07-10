@@ -125,7 +125,6 @@ void UEquipSlotUIComponent::UnCollapseDescription(UUIItemIconBase* Icon)
 bool UEquipSlotUIComponent::bCanStore(UItemInstance* ItemInstance)
 {
 	if (!ItemInstance || !EquipSlot) return false;
-
 	if (EquipSlot->GetEquipTag() == ItemInstance->GetEquipTag() && !EquipSlot->IsOccupied())
 	{
 		return true;

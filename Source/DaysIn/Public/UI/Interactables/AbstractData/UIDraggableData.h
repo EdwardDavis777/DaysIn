@@ -35,8 +35,16 @@ struct FRuntimeData
 	TObjectPtr<UItemInstance> GeneralInstance;
 
 
+	/*
+	     True if the draggable widget has been rotated, false
+		 if the widget was never rotated.
+	*/
+	UPROPERTY(VisibleAnywhere)
+	bool bRotated;
+
+
 	FRuntimeData() 
-	: GeneralInstance()
+	: GeneralInstance(),bRotated(false)
 	{ }
 };
 
@@ -87,14 +95,12 @@ struct FColorData
 	FLinearColor CannotPlaceColor;
 
 
-
 	FColorData()
 	: DefaultBorderColor(),DragBorderColor(1.0f,1.0f,1.0f,0.15f),
 	  HoverBorderColor(1.0f,1.0f,1.0f,0.15f), CanPlaceColor(0.0f,1.0f,0.0f,0.2f), 
 	  CannotPlaceColor(1.0,0.0f,0.0f,0.2f)
 	{ }
 };
-
 
 
 USTRUCT(BlueprintType)
@@ -104,12 +110,4 @@ struct FData
 
 	UPROPERTY(VisibleAnywhere, Category = "Data|Memory")
 	FRuntimeData RuntimeData;
-};
-
-
-
-UCLASS()
-class DAYSIN_API UUIDraggableData : public UObject
-{
-	GENERATED_BODY()
 };

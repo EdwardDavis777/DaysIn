@@ -13,22 +13,16 @@
 //Engine imports.
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Items/Data/ItemRuntimeData.h"
 #include "WeaponRunTimeData.generated.h"
 
 
 
 USTRUCT(BlueprintType)
-struct FWepRunTimeData
+struct FWepRunTimeData : public FItemRunTimeData
 {
 	GENERATED_BODY()
 
 	UPROPERTY(SaveGame)
 	FWepRunTimeStats WeaponRunTimeStats;
-};
-
-UCLASS()
-class DAYSIN_API UWeaponRunTimeData : public UObject
-{
-	GENERATED_BODY()
-	
 };

@@ -16,15 +16,12 @@
 #include "GameplayComponent.generated.h"
 
 
-//Forward declares.
-class UItemInstance;
-
 
 
 UCLASS()
 class DAYSIN_API UGameplayComponent : public UObject
 {
-	GENERATED_BODY()
+	GENERATED_BODY() 
 
 public:
 
@@ -60,17 +57,17 @@ protected:
         Performs a cast using the base general pointer cache when this component
 		is initialized.
 
-		@tparam UItemInstance: T must be a UItemInstance.
+		@tparam UObject: T must be a UObject.
 
-		@return UItemInstance: pointer to some item instance with the class type
-		provided by the caller.
+		@return UObject: pointer to some UObject with the class
+		type provided by the caller.
    */
    template<typename TOwner>
    TOwner* GetOwner()
    {
 	   if (!Owner) return nullptr;
 	   
-	   static_assert(TIsDerivedFrom<TOwner, UItemInstance>::IsDerived, "T must be a UItemInstance");
+	   static_assert(TIsDerivedFrom<TOwner, UObject>::IsDerived, "T must be a UObject");
 	   if (TOwner* Own = Cast<TOwner>(Owner))
 	   {
 		   return Own;

@@ -9,7 +9,7 @@
 	 All widgets that implement really any sort of dropping logic
 	 are derived from this class, such as inventory grids, equipment 
 	 slots, storages etc. 
-
+	  
 */ 
 
 
@@ -29,7 +29,7 @@ class USizeBox;
 class UBorder;
 class UCanvasPanel;
 class UDroppableUIComponent;
-class UUIDraggableSubsystem;
+class UUISubsystem;
 class UPlayerUISubsystem;
 class UItemInstance;
 class AItemBase;
@@ -60,6 +60,14 @@ protected:
 	TObjectPtr<UCanvasPanel> GroupPanel;
 
 
+	/*
+	                                         Data.
+	*/
+	UPROPERTY(VisibleAnywhere, Category = "Data|Memory")
+	FDroppableRuntimeData Data;
+	
+	UPROPERTY(EditAnywhere, Category = "Data|Configurations")
+	ERegionTag RegionTag;
 
 
 	/*
@@ -72,14 +80,8 @@ protected:
 	/*
 	                                     Cache components.
 	*/
-	UPROPERTY(VisibleAnywhere, Category = "Data|Memory")
-	FDroppableRuntimeData Data;
-
-	UPROPERTY(EditAnywhere, Category = "Data|Configurations")
-	ERegionTag RegionTag;
-
 	UPROPERTY()
-	TObjectPtr<UUIDraggableSubsystem> DraggableSubsystem;
+	TObjectPtr<UUISubsystem> UISubsystem;
 
 	UPROPERTY()
 	TObjectPtr<UPlayerUISubsystem> PlayerUISubsystem;
@@ -119,11 +121,10 @@ private:
 		 Note: this function is binded to a dispatch that triggers when a stored draggable
 		 widget is dragged.
 
-
-		 @AssocaitedInstance: pointer to an item instance assocaited with some 
-		 draggable widget; provided by the dispatch call.
+		 @param InDragOperation: pointer to the current
+		 drag and drop operation.
 	*/
-	void ProxyRemoveEvent(TObjectPtr<UItemInstance>& AssocaitedInstance);
+	void ProxyRemoveEvent(UDragDropOperation* InDragOperation);
 
 
 

@@ -47,5 +47,3 @@ struct FPlayerEquipmentDelegates
     FStorageAddedSignature StorageAdded;
     FStorageRemovedSignature StorageRemoved;
 };
-
-

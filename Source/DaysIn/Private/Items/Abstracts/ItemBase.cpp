@@ -9,14 +9,19 @@
 
 //Utility imports.
 #include "Items/Utility/ItemInstanceTemplates.h"
- 
+#include "SubsystemUtilitys/SubsystemUtility.h" 
+
+
 //Custom component imports.
 #include "Items/Components/ItemPhysicsComponent.h"
 
 
+//Subsystem imports.
+#include "Subsystems/Item/ItemEventSubsystem.h"
 
 
 
+ 
 AItemBase::AItemBase() 
 {
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphereComponent"));
@@ -27,14 +32,15 @@ AItemBase::AItemBase()
 
 	ItemPhysicsComponent = CreateDefaultSubobject<UItemPhysicsComponent>(TEXT("ItemPhysicsComponent"));
 }
-
+ 
 
 void AItemBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
+     
 	if (ItemDataAsset)
 	{
+		ItemEventSubsystem = SubUtility::FindSub<UItemEventSubsystem>(GetWorld());
 		ItemInstance = ItemInstanceTemplate::CreateDefaultInstance<UItemInstance>(GetWorld(), ItemDataAsset, ItemDataAsset->ItemProperties.ItemInstanceClass);
 	}
 }
@@ -55,6 +61,7 @@ void AItemBase::Drop(UItemInstance* Instance)
 
 	ItemDataAsset = ItemInstance->GetStaticItemData();
 	ItemInstance = Instance;
+	ItemEventSubsystem->Dispatches.ItemDropped.Broadcast(ItemInstance);
 }
 
 

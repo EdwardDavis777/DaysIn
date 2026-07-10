@@ -33,7 +33,7 @@
 //Forward declares.
 class USphereComponent;
 class UItemPhysicsComponent;
-
+class UItemEventSubsystem;
 
 
 UCLASS()
@@ -71,11 +71,18 @@ protected:
 	/*
 	                              Custom components.
 	*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component") 
 	TObjectPtr<UItemPhysicsComponent> ItemPhysicsComponent;
 
-public:
 
+	/*
+	                              Cached components.
+	*/
+	UPROPERTY()
+	TObjectPtr<UItemEventSubsystem> ItemEventSubsystem;
+
+public:
+	 
 	/* 
 	                           Interface event functions.
 	*/

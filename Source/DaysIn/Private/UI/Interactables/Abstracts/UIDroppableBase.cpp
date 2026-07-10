@@ -9,7 +9,7 @@
  
 //Custom component imports.  
 #include "UI/Interactables/Components/DroppableUIComponent.h"
-#include "CustomClasses/Components/Factory/NativeUITemplate.h"
+#include "CustomClasses/Components/Factory/NativeUITemplate.h" 
 
 
 
@@ -17,15 +17,16 @@
 #include "UI/Interactables/Abstracts/UIDraggableBase.h"
 #include "Items/Abstracts/ItemInstance.h"
 #include "Items/Abstracts/ItemBase.h"
-
+#include "UI/Interactables/Abstracts/GlobalEvents/DraggableTemplates/DraggableTemplates.h"
 
 
 //Utility imports.
 #include "SubsystemUtilitys/SubsystemUtility.h"
 #include "SubsystemUtilitys/SubsystemUtility.h"
 
+
 //Subsystem imports.
-#include "Subsystems/UI/UIDraggableSubsystem.h"
+#include "Subsystems/UI/UISubsystem.h"
 #include "Subsystems/Player/PlayerUISubsystem.h"
 
 
@@ -36,8 +37,9 @@ void UUIDroppableBase::NativeConstruct()
 	Super::NativeConstruct();
 
 	DroppableComponent = NativeUITemplate::CreateDefaultUIComponent<UDroppableUIComponent>(GetWorld(), this);
-	DraggableSubsystem = SubUtility::FindSub<UUIDraggableSubsystem>(GetWorld());
+	UISubsystem = SubUtility::FindSub<UUISubsystem>(GetWorld());
 	PlayerUISubsystem = SubUtility::FindSub<UPlayerUISubsystem>(GetWorld());
+
 	BindDelegates();
 }
 
@@ -50,17 +52,17 @@ void UUIDroppableBase::NativeDestruct()
 
 void UUIDroppableBase::BindDelegates()
 {
-	if (!DraggableSubsystem || !PlayerUISubsystem) return;
+	if (!UISubsystem || !PlayerUISubsystem) return;
 	
-	DraggableSubsystem->DraggableDispatches.DragEventTriggered.AddUObject(this, &UUIDroppableBase::ProxyRemoveEvent);
+	UISubsystem->UISubsystemDispatches.ForwardDragOperation.AddUObject(this, &UUIDroppableBase::ProxyRemoveEvent);
 	PlayerUISubsystem->PlayerUISubsystemDispatches.UIMainOutRender.AddUObject(this, &UUIDroppableBase::HookResetEvent);
 }
 
 void UUIDroppableBase::UnBindDelegates()
 {
-	if (!DraggableSubsystem || !PlayerUISubsystem) return;
-
-	DraggableSubsystem->DraggableDispatches.DragEventTriggered.RemoveAll(this);
+	if (!UISubsystem || !PlayerUISubsystem) return;
+	
+	UISubsystem->UISubsystemDispatches.ForwardDragOperation.RemoveAll(this);
 	PlayerUISubsystem->PlayerUISubsystemDispatches.UIMainOutRender.RemoveAll(this);
 }
 
@@ -69,20 +71,23 @@ void UUIDroppableBase::UnBindDelegates()
 									Intermediate event functions.
 */
 
-void UUIDroppableBase::ProxyRemoveEvent(TObjectPtr<UItemInstance>& AssociatedInstance)
+void UUIDroppableBase::ProxyRemoveEvent(UDragDropOperation* InDragOperation)
 {
-	if (!AssociatedInstance) return;
+	if (!InDragOperation) return;
 
-	if (Data.StoredDragWidgets.Contains(AssociatedInstance))
+	if (TObjectPtr<UItemInstance> AssociatedInstance = DraggableTemplate::GetPayloadInstance<UUIDraggableBase>(InDragOperation))
 	{
-		RemoveStored(AssociatedInstance);
+		if (Data.StoredDragWidgets.Contains(AssociatedInstance))
+		{
+			RemoveStored(AssociatedInstance);
+		}
 	}
 }
 
 
 
 /*
-									   Virtual event functions.
+								 Virtual event functions.
 */
 
 void UUIDroppableBase::StoreItem(AItemBase* Item, const FIntPoint& Position)
@@ -98,8 +103,7 @@ void UUIDroppableBase::StoreItem(UItemInstance* Instance, const FIntPoint& Posit
 
 bool UUIDroppableBase::StoreDropped(UItemInstance* ItemInstance, const FIntPoint& Position)
 {
-	if (!ItemInstance) return false;
-	
+	if (!ItemInstance) return false;	
 	DroppableComponent->HandleStore(ItemInstance, Data.StoredDragWidgets, Position, this);
 	return true;
 }
@@ -131,14 +135,19 @@ void UUIDroppableBase::HookResetEvent(){}
 bool UUIDroppableBase::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDropEvent, UDragDropOperation* InOperation)
 {
 	if (!InOperation || !InOperation->Payload) return false;
-	return DroppableComponent->HandleDrop(InOperation); 
+	
+	if (DroppableComponent->HandleDrop(InOperation))
+	{
+		UISubsystem->UISubsystemDispatches.ForwardDropOperation.Broadcast(InOperation);
+		return true;
+	}
+	return false;
 }
 
 bool UUIDroppableBase::NativeOnDragOver(const FGeometry& InGeometry, const FDragDropEvent& InDropEvent, UDragDropOperation* InOperation)
 {
 	if (!InOperation || !InOperation->Payload) return false;
 	HookDragOverEvent(InGeometry,InDropEvent,InOperation);
-
 	return true;
 }
 
