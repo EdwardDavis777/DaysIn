@@ -42,9 +42,19 @@ struct FRuntimeData
 	UPROPERTY(VisibleAnywhere)
 	bool bRotated;
 
+	/*
+	     Caches the current size of the dragging widget the moment a drag 
+		 instance is created. Only filled for the duration of the drag 
+		 event before the drag instance is deleted from memory.
+	*/
+	UPROPERTY(VisibleAnywhere)
+	FVector2D DragSize;
+
+
 
 	FRuntimeData() 
-	: GeneralInstance(),bRotated(false)
+	: GeneralInstance(),bRotated(false),
+	  DragSize(FVector2D::ZeroVector)
 	{ }
 };
 

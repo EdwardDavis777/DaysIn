@@ -53,10 +53,18 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FForwardDropOperationSignature, UDragDropOpe
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FForwardRotatedItemSignature, UItemInstance* RotatedItem, UUIDraggableBase* DraggingWidget,bool bRotated);
 
 
+/*
+     Dispatched whenever a drag and drop operation is canceled
+     to all listeners.
+*/
+DECLARE_MULTICAST_DELEGATE(FCancelDragAndDropSignature);
+
+
 
 struct FUISubsystemDelegates
 {
     FForwardDragOperationSignature ForwardDragOperation;
     FForwardDropOperationSignature ForwardDropOperation;
     FForwardRotatedItemSignature ForwardRotatedItem;
+    FCancelDragAndDropSignature CancelDragAndDrop;
 };

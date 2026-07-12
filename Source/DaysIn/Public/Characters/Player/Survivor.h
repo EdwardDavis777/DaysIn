@@ -7,7 +7,7 @@
 
  
  
-//Engine imports.
+//Engine imports. 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Survivor.generated.h" 
@@ -22,7 +22,7 @@ class UInputRegistryComponent;
 class UPlayerInteractionComponent;
 class UPlayerCollectionComponent;
 class UUIPlayerMainComponent;
-
+class UUIPlayerLayers;
 
 
 
@@ -65,6 +65,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom|UI", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UUIPlayerMainComponent> UIPlayerMainComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom|UI", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UUIPlayerLayers> UIPlayerLayers;
+
 public:
 	
 	/*

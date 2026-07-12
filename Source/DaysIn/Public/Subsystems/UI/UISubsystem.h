@@ -15,8 +15,11 @@
 //Engine imports.
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "UISubsystem.generated.h"
+#include "UISubsystem.generated.h" 
 
+
+//Forward declares.
+class UUIDragLayer;
 
 
 
@@ -39,6 +42,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UDragDropOperation> DropOperation;
+
+	UPROPERTY()
+	TObjectPtr<UUIDragLayer> DragLayer;
 
 
 	/*
@@ -86,8 +92,17 @@ private:
 	void ClearDropOperation(UDragDropOperation* InOperation);
 
 
+
 public:
 	FUISubsystemDelegates UISubsystemDispatches;
+
+    
+
+	/*
+	                                    Mutators.
+	*/
+	void SetDragLayer(UUIDragLayer* Layer);
+	void ClearDragLayer();
 
 
 	/*
@@ -95,4 +110,5 @@ public:
 	*/
 	TObjectPtr<UDragDropOperation>& GetDragOperation();
 	TObjectPtr<UDragDropOperation>& GetDropOperation();
+	TObjectPtr<UUIDragLayer>& GetDragLayer();
 };

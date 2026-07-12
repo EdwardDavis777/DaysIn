@@ -5,10 +5,18 @@
 #include "Blueprint/UserWidget.h"
 
 
+//Static data imports.
+#include "StaticData/UI/WidgetMath.h"
 
 
+ 
 namespace Transform
 {
+
+	/*
+	                                       Rotation methods.
+	*/
+
 	int32 Rot::RotNeg90(UUserWidget* WidgetToRotate)
 	{
 		if (!WidgetToRotate) return int32();
@@ -25,7 +33,7 @@ namespace Transform
 		if (!WidgetToRotate) return int32();
 
 		FWidgetTransform Transform90;
-		Transform90.Angle = -90;
+		Transform90.Angle = -90; 
 		WidgetToRotate->SetRenderTransform(Transform90);
 		
 		return Transform90.Angle;
@@ -50,5 +58,6 @@ namespace Transform
 
 		return Transform0.Angle;
 	}
-}
 
+
+}

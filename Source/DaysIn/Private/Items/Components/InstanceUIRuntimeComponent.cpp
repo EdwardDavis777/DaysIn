@@ -15,6 +15,14 @@
 
 
 
+/*
+        Start working on saving inventory items, make a new subsystem for dispatching
+		save events for inventory items, then in the item event subsystem make a dispatch
+		that triggeres when an item inside of the load equipment slots (or in a similar class) when
+		the item is fully initialized. Then re-pack the the inventory items from there.
+*/
+
+
 void UInstanceUIRuntimeComponent::Initialize(UWorld* WorldContext, UObject* OwnerObject)
 {
 	Super::Initialize(WorldContext, OwnerObject);
@@ -35,7 +43,7 @@ void UInstanceUIRuntimeComponent::BindDelegates()
 
 
 /*
-						         Item instance UI event functions.
+						           Item instance UI event functions.
 */
 
 void UInstanceUIRuntimeComponent::NotifyRotated(UItemInstance* RotatedInstance, UUIDraggableBase* AssocaitedWidget)

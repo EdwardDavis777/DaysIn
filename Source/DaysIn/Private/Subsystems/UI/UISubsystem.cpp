@@ -14,7 +14,7 @@ void UUISubsystem::Deinitialize()
 {
 	Super::Deinitialize();
 }
-
+ 
 
 void UUISubsystem::BindDelegates()
 {
@@ -53,6 +53,21 @@ void UUISubsystem::ClearDropOperation(UDragDropOperation* InOperation)
 }
 
 
+/*
+										Mutators.
+*/
+
+void UUISubsystem::SetDragLayer(UUIDragLayer* Layer)
+{
+	if (!Layer) return;
+	DragLayer = Layer;
+}
+
+void UUISubsystem::ClearDragLayer()
+{
+	DragLayer = nullptr;
+}
+
 
 
 /*
@@ -67,4 +82,9 @@ TObjectPtr<UDragDropOperation>& UUISubsystem::GetDragOperation()
 TObjectPtr<UDragDropOperation>& UUISubsystem::GetDropOperation()
 {
 	return DropOperation;
+}
+
+TObjectPtr<UUIDragLayer>& UUISubsystem::GetDragLayer()
+{
+	return DragLayer;
 }

@@ -13,6 +13,7 @@
 #include "Interaction/Player/Component/PlayerInteractionComponent.h"
 #include "Interaction/Player/Component/PlayerCollectionComponent.h"
 #include "UI/Player/Components/UIPlayerMainComponent.h"
+#include "UI/Player/Components/UIPlayerLayers.h"
 
 
 
@@ -32,6 +33,7 @@ ASurvivor::ASurvivor()
 	PlayerInteractionComponent = CreateDefaultSubobject<UPlayerInteractionComponent>(TEXT("PlayerInteractionComponent"));
 	PlayerCollectionComponent = CreateDefaultSubobject<UPlayerCollectionComponent>(TEXT("PlayerCollectionComponent"));
 	UIPlayerMainComponent = CreateDefaultSubobject<UUIPlayerMainComponent>(TEXT("UIPlayerMainComponent"));
+	UIPlayerLayers = CreateDefaultSubobject<UUIPlayerLayers>(TEXT("UIPlayerLayersComponent"));
 }
 
 

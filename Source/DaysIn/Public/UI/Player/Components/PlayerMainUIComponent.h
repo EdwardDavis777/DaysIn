@@ -8,7 +8,7 @@
 
 */
 
- 
+  
 //Engine imports.
 #include "CoreMinimal.h"
 #include "CustomClasses/Components/NativeUIComponent.h"
@@ -20,6 +20,7 @@
 class UUIPlayerMain;
 class UPlayerUISubsystem;
 class UPlayerSubsystem;
+class UUISubsystem;
 class UItemInstance;
 class UDragDropOperation;
 
@@ -99,4 +100,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UPlayerSubsystem> PlayerSubsystem;
+
+	UPROPERTY()
+	TObjectPtr<UUISubsystem> UISubsystem;
 };

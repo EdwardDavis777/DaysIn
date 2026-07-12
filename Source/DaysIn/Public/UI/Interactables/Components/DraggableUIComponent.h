@@ -3,7 +3,7 @@
 /*
      Defines default run-time logic for all UIDraggableBase
 	 widget instances.
-*/
+*/ 
 
 
 
@@ -19,7 +19,7 @@ class UUIDraggableBase;
 class UDragDropOperation;
 class UItemInstance;
 class UPlayerUISubsystem;
-
+class UUISubsystem;
  
 
 UCLASS()
@@ -40,6 +40,12 @@ public:
 	/*
 	     Simply initializes class defaults, such as the drag widgets
 		 image etc.
+
+		 @param DragInstance: pointer to the current drag instance
+		 you wish to initialize.
+
+		 @param Instance: pointer to the assocaited item instance; the item
+		 assocaited with the drag widget.
 	*/
 	void InitDefaults(UUIDraggableBase* DragInstance, UItemInstance* Instance);
 
@@ -146,7 +152,7 @@ public:
 	void SetDragWidgetSize(UUIDraggableBase* DragWidget, TObjectPtr<UItemInstance>& Instance);
 
 
-	/*
+   	/*
 	    Copies over all drag widget defaults from a reference widget, over to 
 		a valid empty copy.
 
@@ -160,6 +166,8 @@ public:
 		wish to set through the reference pointer.
 	*/
 	void CopyDefaults(UUIDraggableBase* Reference, UUIDraggableBase* Copy, TObjectPtr<UItemInstance>& OwnerInstance);
+
+
 private:
 
 	/*
@@ -167,4 +175,8 @@ private:
 	*/
 	UPROPERTY()
 	TObjectPtr<UUIDraggableBase> DraggableWidget;
+
+	UPROPERTY()
+	TObjectPtr<UUISubsystem> UISubsystem;
+
 };

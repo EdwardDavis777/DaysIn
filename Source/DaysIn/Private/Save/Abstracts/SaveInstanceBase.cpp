@@ -35,7 +35,7 @@ void USaveInstanceBase::Save()
 	{
 		if (Pkg.Key.Get())
 		{
-			Arch::SerializeObject<FSPKGInstanceBase>(Pkg.Key, Pkg.Value);
+			Arch::SerializeObject<FSPKGInstanceBase>(Pkg.Key, Pkg.Value); 
 			SavedPackages.Emplace(Pkg.Value);
 		}
 	}

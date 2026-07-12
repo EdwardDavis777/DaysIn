@@ -8,7 +8,7 @@
 */
 
 
-//Engine imports.
+//Engine imports. 
 #include "CoreMinimal.h"
 
 //Forward declares.
@@ -67,4 +67,6 @@ namespace Transform
         */
         static int32 Rot0(UWidget* WidgetToRotate);
     };
+
+
 }

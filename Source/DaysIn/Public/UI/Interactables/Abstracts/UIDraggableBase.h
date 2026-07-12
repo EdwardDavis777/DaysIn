@@ -8,7 +8,7 @@
 
 //Other imports.
 #include "UI/Interactables/AbstractData/UIDraggableData.h"
-  
+   
  
 //Engine imports.
 #include "CoreMinimal.h"
@@ -43,6 +43,7 @@ protected:
 	void BindDelegates();
 	void UnBindDelegates();
 
+
 	/*
 	                         UUIDraggableBase components.
 	*/
@@ -60,11 +61,10 @@ protected:
 
 
 	/*
-									Data structs.
+									      Data.
 	*/
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Data")
 	FData Data;
-
 
 
 	/*
@@ -216,14 +216,16 @@ public:
 	void AddToRender();
 	void RemoveFromRender();
 	void SetRotated(bool bRotated);
+	void SetDragSize(double& XSize, double& YSize);
+	
 
-
-
-   
 
 	/*
-	                                     Accessors.
+	                                      Accessors.
 	*/
+	FORCEINLINE const FVector2D& GetDragSize() const { return Data.RuntimeData.DragSize; }
+	
+	
 	USizeBox* GetSizeBox();
 	const FVector2D GetSizeBoxSize() const;
 	TObjectPtr<UBorder> GetBorder();

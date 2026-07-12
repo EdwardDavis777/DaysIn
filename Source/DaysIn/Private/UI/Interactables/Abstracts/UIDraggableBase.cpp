@@ -9,7 +9,7 @@
 
 
   
-//Other imports.
+//Other imports. 
 #include "Items/Abstracts/ItemBase.h"
 
 
@@ -65,8 +65,6 @@ void UUIDraggableBase::UnBindDelegates()
 	UISubsystem->UISubsystemDispatches.ForwardRotatedItem.RemoveAll(this);
 	PlayerUISubsystem->PlayerUISubsystemDispatches.UIMainOutRender.RemoveAll(this);
 }
-
-
 
 
 /*
@@ -178,6 +176,11 @@ void UUIDraggableBase::RemoveFromRender()
 void UUIDraggableBase::SetRotated(bool bRotated)
 {
 	Data.RuntimeData.bRotated = bRotated;
+}
+
+void UUIDraggableBase::SetDragSize(double& XSize, double& YSize)
+{
+	Data.RuntimeData.DragSize = FVector2D(XSize, YSize);
 }
 
 

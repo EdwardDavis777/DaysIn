@@ -25,7 +25,7 @@
 //Subsystem imports.
 #include "Subsystems/Player/PlayerUISubsystem.h"
 #include "Subsystems/Player/PlayerSubsystem.h"
-
+#include "Subsystems/UI/UISubsystem.h"
 
 
 
@@ -37,6 +37,8 @@ void UPlayerMainUIComponent::Initialize(UWorld* WorldContext, UUserWidget* Owner
 	PlayerMain = FindOwner<UUIPlayerMain>();
 	PlayerUISubsystem = SubUtility::FindSub<UPlayerUISubsystem>(WorldContext);
 	PlayerSubsystem = SubUtility::FindSub<UPlayerSubsystem>(WorldContext);
+	UISubsystem = SubUtility::FindSub<UUISubsystem>(WorldContext);
+
 	BindDelegates();
 }
 
@@ -68,9 +70,12 @@ void UPlayerMainUIComponent::UpdateUISubsystem()
 
 void UPlayerMainUIComponent::CancelDragEvents()
 {
+	if (!UISubsystem) return;
+
 	if (FSlateApplication::IsInitialized() && FSlateApplication::Get().IsDragDropping())
-	{
+	{ 
 		FSlateApplication::Get().CancelDragDrop();
+		UISubsystem->UISubsystemDispatches.CancelDragAndDrop.Broadcast();
 	}
 }
 
@@ -83,11 +88,12 @@ void UPlayerMainUIComponent::CancelDragEvents()
 
 bool UPlayerMainUIComponent::SpawnEvent(UDragDropOperation* InOperation)
 {
-	if (!InOperation || !InOperation->Payload) return false;
+	if (!InOperation || !InOperation->Payload || !UISubsystem) return false;
 
 	if (UItemInstance* DropInst = DraggableTemplate::GetPayloadInstance<UUIDraggableBase>(InOperation))
 	{
-		SpawnItem(DropInst);
+		SpawnItem(DropInst); 
+		UISubsystem->UISubsystemDispatches.ForwardDropOperation.Broadcast(InOperation);
 		return true;
 	}
 	return false;

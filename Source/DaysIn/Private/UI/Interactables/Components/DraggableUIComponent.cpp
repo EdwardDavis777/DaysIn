@@ -7,7 +7,6 @@
 #include "Components/Border.h"
 #include "Components/Image.h"
 #include "Components/SizeBox.h"
- 
 
 
 //Other imports.
@@ -15,6 +14,7 @@
 #include "Items/Components/InstanceUIRuntimeComponent.h"
 #include "UI/Interactables/Abstracts/GlobalEvents/DraggableTemplates/DraggableTemplates.h"
 #include "UI/GlobalActions/TransformAction.h"
+#include "UI/Layers/UIDragLayer.h"
 
 
 //Static data imports.
@@ -24,9 +24,12 @@
 //Widget imports.
 #include "UI/Interactables/Abstracts/UIDraggableBase.h"
 
+//Utility imports.
+#include "SubsystemUtilitys/SubsystemUtility.h"
 
 //Subsystem imports.
 #include "Subsystems/Player/PlayerUISubsystem.h"
+#include "Subsystems/UI/UISubsystem.h"
 
 
 
@@ -34,6 +37,7 @@ void UDraggableUIComponent::Initialize(UWorld* WorldContext, UUserWidget* OwnerW
 {
 	Super::Initialize(WorldContext, OwnerWidget);
 	DraggableWidget = FindOwner<UUIDraggableBase>();
+	UISubsystem = SubUtility::FindSub<UUISubsystem>(WorldContext);
 }
 
 
@@ -51,14 +55,15 @@ void UDraggableUIComponent::InitDefaults(UUIDraggableBase* DragInstance, UItemIn
 
 
 void UDraggableUIComponent::MakeDragWidget(UDragDropOperation* InOperation,UUIDraggableBase* EventOwner, TObjectPtr<UItemInstance>& OwnerInstance)
-{
-	if (!InOperation || !EventOwner || !OwnerInstance) return;
+{ 
+	if (!InOperation || !EventOwner || !OwnerInstance || !UISubsystem) return;
      
 	if (auto* Drag = CreateWidget<UUIDraggableBase>(World, OwnerInstance->GetIconClass()))
 	{
 		CopyDefaults(EventOwner, Drag, OwnerInstance);
 		SetDragWidgetSize(Drag, OwnerInstance);
-		InOperation->DefaultDragVisual = Drag;
+		
+		UISubsystem->GetDragLayer()->AddToLayer(Drag, OwnerInstance->GetItemSize().X, OwnerInstance->GetItemSize().Y);
 		InOperation->Payload = Drag;
 		InOperation->Pivot = EDragPivot::CenterCenter;
 		InOperation->Offset = FVector2D::ZeroVector;
@@ -130,9 +135,8 @@ void UDraggableUIComponent::ResetDefaults(const FLinearColor& DefaultBorderColor
 
 
 /*
-									   Helper functions.
+									    Helper functions.
 */
-
 
 void UDraggableUIComponent::SetDragWidgetSize(UUIDraggableBase* DragWidget, TObjectPtr<UItemInstance>& Instance)
 {
@@ -141,7 +145,9 @@ void UDraggableUIComponent::SetDragWidgetSize(UUIDraggableBase* DragWidget, TObj
 	FVector2D NewSize = FVector2D(WidgetMath::TileSize * Instance->GetItemSize().X, WidgetMath::TileSize * Instance->GetItemSize().Y);
 	DragWidget->GetSizeBox()->SetWidthOverride(NewSize.X);
 	DragWidget->GetSizeBox()->SetHeightOverride(NewSize.Y);
+	DragWidget->SetDragSize(NewSize.X, NewSize.Y);
 }
+
 
 
 void UDraggableUIComponent::CopyDefaults(UUIDraggableBase* Reference, UUIDraggableBase* Copy, TObjectPtr<UItemInstance>& OwnerInstance)
