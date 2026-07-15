@@ -5,7 +5,7 @@
      Defines class defaults for all save related subsystems.
 	 Only subsystems that actually trigger save events at 
 	 run-time.
-
+	  
 */ 
 
 
@@ -26,6 +26,8 @@ class USaveGame;
 class UPlayerUISubsystem;
 class UPlayerEquipmentSubsystem;
 class UItemEventSubsystem;
+
+
 
 UCLASS()
 class DAYSIN_API USaveSubsystem : public UGameInstanceSubsystem
@@ -52,6 +54,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UItemEventSubsystem> ItemEventSubsystem;
+   
 
 
 	/*
@@ -67,6 +70,21 @@ protected:
 		 to load.
 	*/
 	void LoadSaveAtBegin(USaveGame* SaveClass);
+
+
+	
+	/*
+	     Loads a save that has a dependency object when
+		 called.
+
+		 @param SaveClass: pointer to the save class you 
+		 wish to load.
+
+		 @param DependencyObject: pointer to the save dependent
+		 object.
+	*/
+	void LoadSaveAtBegin(USaveGame* SaveClass, UObject* DependencyObject); 
+
 
 
 	/*
@@ -92,6 +110,28 @@ protected:
 		if (TSaveClass* SaveClass = NewObject<TSaveClass>())
 		{
 			SaveManager->ManageSave(SaveClass);
+			return SaveClass;
+		}
+		return nullptr;
+	}
+
+
+	/*
+		 Constructs a save class instance that is unmanaged by the 
+		 save manager subsystem. Save and load events will have to be managed
+		 seperatly.
+
+		 @tparam USaveGame: T must be a USaveGame.
+
+		 @return USaveGame: a pointer to a USaveGame class instance with the class
+		 type provided by the caller.
+	*/
+	template<typename TSaveClass>
+	TSaveClass* MakeUnmanagedSave()
+	{
+		static_assert(TIsDerivedFrom<TSaveClass, USaveGame>::IsDerived, "T must be a USaveGame");
+		if (TSaveClass* SaveClass = NewObject<TSaveClass>())
+		{
 			return SaveClass;
 		}
 		return nullptr;

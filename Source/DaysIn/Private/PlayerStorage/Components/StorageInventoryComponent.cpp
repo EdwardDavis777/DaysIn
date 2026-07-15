@@ -38,9 +38,9 @@ void UStorageInventoryComponent::Initialize(UWorld* WorldContext, UObject* Owner
 
 
 
-/*
+/* 
                                   Mutator functions. 
-*/
+*/ 
 
 void UStorageInventoryComponent::AddItem(UItemInstance* Instance, const int32& Origin)
 {
@@ -56,7 +56,10 @@ void UStorageInventoryComponent::AddItem(UItemInstance* Instance, const int32& O
 			StoredItems[TileToIndex(FIntPoint(xPos, yPos))] = Instance;
 		}
 	}
+	StorageCache.Emplace(Instance, Tile);
 
+
+	//Triggering global storage event.
 	StorageInventorySubsystem->StorageDispatches.ItemAddedEvent.Broadcast(
 	CollectableStorageInstance, Instance, Tile);
 }
@@ -65,14 +68,23 @@ void UStorageInventoryComponent::RemoveItem(UItemInstance* Instance)
 {
 	if (!Instance || StoredItems.IsEmpty()) return;
 
-	for (int32 i{}; i < StoredItems.Num(); i++)
+	if (StoredItems.Contains(Instance))
 	{
-		if (StoredItems[i] == Instance) { StoredItems[i] = nullptr; }
+		for (int32 i{}; i < StoredItems.Num(); i++)
+		{
+			if (StoredItems[i] == Instance) { StoredItems[i] = nullptr; }
+		}
+		StorageCache.Remove(Instance);
+
+
+		//Triggering global removal event.
+		StorageInventorySubsystem->StorageDispatches.ItemRemovedEvent.Broadcast(
+		CollectableStorageInstance, Instance);
 	}
 }
 
 
-
+ 
 
 
 
@@ -92,6 +104,21 @@ bool UStorageInventoryComponent::bCheckAndStore(UItemInstance* Instance, FIntPoi
 	}
 	return false;
 }
+
+bool UStorageInventoryComponent::bCheckAndStore(AItemBase* Item, const FIntPoint& position)
+{ 
+	if (!Item) return false;
+
+	int32 Index = TileToIndex(position);
+	if (bCanStore(Item->Instance(), Index))
+	{
+		AddItem(Item->Instance(), Index);
+		Item->Pickup();
+		return true;
+	}
+	return false;
+}
+
 
 bool UStorageInventoryComponent::bCheckAndStore(AItemBase* Item)
 {
@@ -175,4 +202,14 @@ bool UStorageInventoryComponent::bIsValidTile(const FIntPoint& Tile) const
 	Tile.X < Columns && Tile.Y < Rows) return true;
 
 	return false;
+}
+
+
+/*
+                                     Accessors.
+*/
+
+TMap<TObjectPtr<UItemInstance>, FIntPoint>& UStorageInventoryComponent::GetStorageCache()
+{
+	return StorageCache;
 }

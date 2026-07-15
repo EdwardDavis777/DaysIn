@@ -21,13 +21,13 @@ class UItemInstance;
 class UUIDraggableBase;
 class UCanvasPanel;
 class UDragDropOperation;
-
+class UItemInstance;
 
 
 UCLASS()
 class DAYSIN_API UStorageUIInventoryComponent : public UNativeUIComponent
 {
-	GENERATED_BODY()
+	GENERATED_BODY() 
 
 public:
 	virtual void Initialize(UWorld* WorldContext, UUserWidget* OwnerWidget) override;
@@ -36,6 +36,16 @@ public:
 	/*
 	                            Inventory event functions.
 	*/ 
+
+	/*
+	     Handles constructing widgets that could not be constructed during a 
+		 storage event.
+
+		 @param StorageCache: map of all items that need to have their widgets
+		 constructed.
+	*/
+	void HandleRefresh(TMap<TObjectPtr<UItemInstance>, FIntPoint>& StorageCache);
+
 
 	/*
 	    Checks if the passed storage object from a store event, is equal to the owner storage instance; if they 

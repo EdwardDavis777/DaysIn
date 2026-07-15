@@ -4,7 +4,7 @@
 /*
      Defines class defaults for saving instance related objects
 	 in memory.
-*/
+*/ 
  
 
 //Interface imports.
@@ -23,7 +23,7 @@
 
 
 
-
+ 
 UCLASS()
 class DAYSIN_API USaveInstanceBase : public USaveGame, public ISaveInterface
 {
@@ -32,11 +32,12 @@ class DAYSIN_API USaveInstanceBase : public USaveGame, public ISaveInterface
 public:
 	virtual void Save() override;
 	virtual void Load(UWorld* WorldContext) override;
+	virtual void Load(UWorld* WorldContext, UObject* DependencyObject) override{}
 
 
-    /*
-	                            Cache event functions.
-	*/
+	/*
+							     Cache event functions.
+    */
 
 	/*
 	     Caches the provided instance into the proxy cache to prepare it 
@@ -46,6 +47,7 @@ public:
 		 the save proxy.
 	*/
 	virtual void ProxyInstance(UItemInstance* Instance) PURE_VIRTUAL(USaveInstanceBase::ProxyInstance, );
+
 
 
 	/*
@@ -68,9 +70,25 @@ public:
 	*/
 	virtual void UnProxyInstance(UItemInstance* Instance);
 
-
 protected:
 	USaveInstanceBase();
+
+    
+	/*
+	                         Serialize event functions.
+	*/
+
+	/*
+	     Serializes inner sub instances that are defined inside of the
+		 passed instance. The function will continue to call itself
+		 in a recursive manner until there are no more inner instances
+		 to serialize.
+
+		 @param OuterInstance: pointer to an outer item 
+		 instance.
+	*/
+	virtual void SerializeRecursive(UItemInstance* OuterInstance);
+
 
 
 	/*

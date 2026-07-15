@@ -7,6 +7,9 @@
 
 */
 
+//Other imports.
+#include "Save/Packages/Objects/Abstracts/SPKGSubInstance.h"
+
 
 //Engine imports.
 #include "CoreMinimal.h"
@@ -14,6 +17,7 @@
 
 //Forward declares.
 class UItemInstance;
+
 
 
 /*
@@ -26,9 +30,24 @@ class UItemInstance;
 DECLARE_MULTICAST_DELEGATE_OneParam(FItemDroppedSignature, UItemInstance* DroppedInstance);
 
 
+/*
+     Dispatched during a post de-serialize event has occured for
+     an item instance.
+
+     @param SavePackage: array of references to inner sub 
+     save packages.
+
+     @param SentBackInners: map of AActor pointers and their assocaited save package that will be populated
+     during a deserialize event of inner actors/instances.
+
+     @param OuterInstance: pointer to the outer
+     instance.
+*/
+DECLARE_MULTICAST_DELEGATE_FourParams(FPostDeserizlieEventSignature, const TArray<FSPKGSubInstance>& SavePackages, TMap<TObjectPtr<AActor>, FSPKGSubInstance>& SentBackInners,UItemInstance* OuterInstance);
+
 
 struct FItemEventSubsystemDelegates
 {
     FItemDroppedSignature ItemDropped;
+    FPostDeserizlieEventSignature PostDeserizlieEvent;
 };
-

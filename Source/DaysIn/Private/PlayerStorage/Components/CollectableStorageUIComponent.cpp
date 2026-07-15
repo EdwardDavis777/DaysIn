@@ -15,6 +15,7 @@
 #include "PlayerStorage/Abstracts/CollectableStorageInstance.h"
 #include "PlayerStorage/Data/CollectableStorageDataAsset.h"
 #include "UI/Storages/Abstracts/UICollectableStorageInventory.h"
+#include "PlayerStorage/Components/StorageInventoryComponent.h"
 #include "UI/Player/UIPlayerMain.h"
 #include "UI/Player/UIRegionPanel.h"
 
@@ -59,7 +60,7 @@ void UCollectableStorageUIComponent::BindDelegates()
 
 
 /*
-								   Event functions.
+								   Event functions. 
 */
 
 void UCollectableStorageUIComponent::CreateInventory(UCollectableStorageInstance* Instance)
@@ -105,9 +106,10 @@ void UCollectableStorageUIComponent::ConstructInitial(UCollectableStorageInstanc
 	if (!ParentSlot) return;
 
 	StorageInventory->InitializeGrid(StorageInstance->GetSize().X, StorageInstance->GetSize().Y, StorageInstance);
+	StorageInventory->RefreshUI(StorageInstance->GetInventoryComponent()->GetStorageCache());
 	SetRegionSize(StorageInstance);
+	
 	bAlreadyConstructed = true;
-
 }
 
 

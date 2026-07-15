@@ -5,13 +5,21 @@
       into the world at run-time.
 */
 
+//Config imports.
+#include "Configs/ItemSpawnerConfigs.h"
 
+ 
 //Engine imports.
 #include "CoreMinimal.h"
  
+
+
 //Forward declares.
 class AItemBase;
 class UItemInstance;
+struct FSPKGSubInstance;
+
+
 
 
 namespace ItemSpawner
@@ -30,4 +38,18 @@ namespace ItemSpawner
          @return AItemBase: pointer to the spawned item.
     */
     AItemBase* SpawnItemLazy(const TSubclassOf<AItemBase>& ItemClass,UWorld* WorldContext);
+
+
+    /*
+        Spawns an item through a given sub instances package struct,
+        and returns a pointer to the spawned item to the caller.
+
+
+        @param InnerPackage: reference to the inner package assocaited
+        with the item you wish to spawn.
+
+        @param WorldContext: pointer to the current world
+        context.
+    */
+    AItemBase* SpawnInnerItem(const FSPKGSubInstance& InnerPackage, UWorld* WorldContext);
 }

@@ -62,11 +62,9 @@ void UDraggableUIComponent::MakeDragWidget(UDragDropOperation* InOperation,UUIDr
 	{
 		CopyDefaults(EventOwner, Drag, OwnerInstance);
 		SetDragWidgetSize(Drag, OwnerInstance);
-		
+
 		UISubsystem->GetDragLayer()->AddToLayer(Drag, OwnerInstance->GetItemSize().X, OwnerInstance->GetItemSize().Y);
 		InOperation->Payload = Drag;
-		InOperation->Pivot = EDragPivot::CenterCenter;
-		InOperation->Offset = FVector2D::ZeroVector;
 	}
 }
 

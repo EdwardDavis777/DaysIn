@@ -21,7 +21,6 @@ struct FItemUIRunTimeData
 {
     GENERATED_BODY()
 
-
     UPROPERTY(SaveGame)
     FIntPoint RotatedSize;
 

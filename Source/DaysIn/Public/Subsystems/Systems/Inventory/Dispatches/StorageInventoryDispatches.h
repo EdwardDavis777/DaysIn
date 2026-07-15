@@ -13,7 +13,8 @@
 
 
 /*
-     Dispatched when an item is added to some players storage object.
+     Dispatched when an item is added to some players storage 
+     object.
 
      @param StorageInstnace: pointer to the current storage item that 
      is being used.
@@ -28,10 +29,23 @@ DECLARE_MULTICAST_DELEGATE_ThreeParams(FItemAddedEventSignature, UObject* Storag
 
 
 
+/*
+    Dispatched when an item is removed from some players storage
+    object.
+
+    @param StorageInstance: pointer to some storage
+    instance.
+
+    @param RemovedInstance: pointer to some
+    removed object instance.
+*/
+DECLARE_MULTICAST_DELEGATE_TwoParams(FItemRemovedEventSignature, UObject* StorageInstance, UObject* RemovedInstnace);
+
+
 
 
 struct FStorageInventoryDelegates
 {
     FItemAddedEventSignature ItemAddedEvent;
+    FItemRemovedEventSignature ItemRemovedEvent;
 };
-

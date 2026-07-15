@@ -10,7 +10,7 @@
  
 //Other imports.
 #include "Items/Data/ItemRuntimeData.h"
-#include "SharedData/Interaction/ItemEquipTag.h" 
+#include "SharedData/Interaction/ItemEquipTag.h"  
 
 
 //Engine imports.
@@ -25,6 +25,7 @@ class UItemDataAsset;
 class UUIDraggableBase;
 class AItemBase;
 class UInstanceUIRuntimeComponent;
+class UItemEventSubsystem;
 
 
 UCLASS()
@@ -46,10 +47,39 @@ public:
 	virtual void Initialize(UWorld* WorldContext, UItemDataAsset* ItemData);
 
 
+	/*
+	                            Virtual event functions.
+	*/
+
+	/*
+	       Called for outer instances that have been fully loaded back into 
+		   the game during an initial save load event.
+	*/
+	virtual void PostOuterDeserialize();
+
+	/*
+	       Called after all inner instances (for this current instance) have been 
+		   fully deserialized and loaded.
+	*/
+	virtual void PostInnerDeserialize();
+
+
+
+
+	/*
+	                                   Mutators.
+	*/
+	void AddSubInstance(UObject* SubInstance,const FIntPoint& Position = FIntPoint());
+	void RemoveSubInstance(UObject* SubInstance);
+
+
 
 	/*
 	                                  Accessors.
 	*/
+	TMap<TObjectPtr<AActor>, FSPKGSubInstance>& GetInners();
+	TArray<FSPKGSubInstance>& GetSubInstancePackages();
+	const TMap<TObjectPtr<UObject>,FIntPoint>& GetSubInstances() const;
 	TObjectPtr<UItemDataAsset>& GetStaticItemData();
 	FItemRunTimeData& GetItemRuntimeData();
 	const FIntPoint GetItemSize() const;
@@ -62,7 +92,6 @@ public:
 	UTexture2D* GetItemIcon();
 	TSubclassOf<UUIDraggableBase>& GetIconClass();
 	TObjectPtr<UInstanceUIRuntimeComponent>& GetUIRuntimeComponent();
-
 protected:
 
 	/*
@@ -86,6 +115,9 @@ protected:
 	*/
     UPROPERTY()
 	TObjectPtr<UWorld> World;
+
+	UPROPERTY()
+	TObjectPtr<UItemEventSubsystem> ItemEventSubsystem;
 
 
 	/*

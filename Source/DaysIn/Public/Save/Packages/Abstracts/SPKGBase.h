@@ -19,7 +19,7 @@ struct FSPKGBase
 {
     GENERATED_BODY()
 
-    UPROPERTY()
+    UPROPERTY(SaveGame)
     TArray<uint8> ByteData;
 
     FSPKGBase()

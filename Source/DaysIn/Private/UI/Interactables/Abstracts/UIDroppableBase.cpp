@@ -10,7 +10,7 @@
 //Custom component imports.  
 #include "UI/Interactables/Components/DroppableUIComponent.h"
 #include "CustomClasses/Components/Factory/NativeUITemplate.h" 
-
+ 
 
 
 //Other imports.
@@ -48,7 +48,7 @@ void UUIDroppableBase::NativeDestruct()
 	Super::NativeDestruct();
 	UnBindDelegates();
 }
-
+ 
 
 void UUIDroppableBase::BindDelegates()
 {

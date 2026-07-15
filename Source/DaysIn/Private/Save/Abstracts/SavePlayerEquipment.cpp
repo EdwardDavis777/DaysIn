@@ -5,12 +5,12 @@
 #include "Components/CanvasPanel.h"
 
 
-
+ 
 //Other imports.
 #include "Items/Abstracts/ItemInstance.h"
 #include "Items/Abstracts/ItemBase.h"
 #include "UI/Player/UIPlayerEquipmentMain.h"
-#include "UI/Player/UIEquipSlotBase.h"
+#include "UI/Player/UIEquipSlotBase.h" 
 
 
 
@@ -30,7 +30,7 @@ USavePlayerEquipment::USavePlayerEquipment()
 
 
 
-
+ 
 /*
 							   Forced event functions.
 */
@@ -74,7 +74,11 @@ void USavePlayerEquipment::LoadToSlots()
 			{
 				if (EquipSlot->GetEquipTag() == Asset->GetEquipTag())
 				{
+					auto* Instance = Asset->Instance();
+					if (!Instance) continue;
+
 					EquipSlot->StoreItem(Asset);
+					Instance->PostOuterDeserialize();
 				}
 			}
 		}

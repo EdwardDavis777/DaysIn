@@ -80,4 +80,19 @@ public:
 		 context.
 	*/
 	void Load(USaveGame* SaveClass,UWorld* WorldContext);
+
+	/*
+	     Loads a save class instance that requires a dependency object
+		 to load saves.
+
+		 @param SaveClass: pointer to the save class instance
+		 you wish to load.
+
+		 @param WorldContext: pointer to the current world
+		 context.
+
+		 @param DependencyObject: pointer to the save dependent
+		 object.
+	*/
+	void Load(USaveGame* SaveClass, UWorld* WorldContext, UObject* DependencyObject);
 };

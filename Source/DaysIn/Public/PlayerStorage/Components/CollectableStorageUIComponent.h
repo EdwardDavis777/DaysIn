@@ -4,7 +4,7 @@
 
      Handles the construction of a collectable storage objects
 	 inventory widget, etc.
-
+	  
 */
 
 

@@ -8,7 +8,7 @@
 //Other imports. 
 #include "PlayerStorage/Abstracts/CollectableStorageInstance.h"
 
- 
+  
 //Custom component imports.
 #include "UI/Storages/Components/StorageUIInventoryComponent.h"
 #include "CustomClasses/Components/Factory/NativeUITemplate.h"
@@ -42,6 +42,18 @@ void UUICollectableStorageInventory::BindDelegates()
 {
 	if (!StorageInventorySubsystem) return;
 	StorageInventorySubsystem->StorageDispatches.ItemAddedEvent.AddUObject(this, &UUICollectableStorageInventory::AddItemEvent);
+}
+
+
+
+/*
+								   Update event functions.
+*/
+
+void UUICollectableStorageInventory::RefreshUI(TMap<TObjectPtr<UItemInstance>, FIntPoint>& StorageCache)
+{
+	if (StorageCache.IsEmpty() || !StorageUIComponent) return;
+	StorageUIComponent->HandleRefresh(StorageCache);
 }
 
 

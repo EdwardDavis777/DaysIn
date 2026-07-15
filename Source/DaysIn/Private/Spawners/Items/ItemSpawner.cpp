@@ -1,6 +1,11 @@
 //Engine imports.
 #include "Spawners/Items/ItemSpawner.h"
 
+
+//Data imports.
+#include "Save/Packages/Objects/Abstracts/SPKGSubInstance.h"
+
+
 //Other imports.
 #include "Items/Abstracts/ItemBase.h"
 #include "Items/Abstracts/ItemInstance.h"
@@ -13,13 +18,20 @@ namespace ItemSpawner
 	{
 		if (!ItemClass || !WorldContext) return nullptr;
 
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		const FEmptyConfig Default;
+		if (auto* SpawnedItem = WorldContext->SpawnActor<AItemBase>(ItemClass, Default.SpawnLoc, Default.SpawnRot, Default.SpawnParams))
+		{
+			return SpawnedItem;
+		}
+		return nullptr;
+	}
+    
+	AItemBase* SpawnInnerItem(const FSPKGSubInstance& InnerPackage,UWorld* WorldContext)
+	{
+		if (!InnerPackage.ItemClass || !WorldContext) return nullptr;
 
-		FVector SpawnLoc = FVector::ZeroVector;
-		FRotator SpawnRot = FRotator::ZeroRotator;
-
-		if (auto* SpawnedItem = WorldContext->SpawnActor<AItemBase>(ItemClass, SpawnLoc, SpawnRot, SpawnParams))
+		const FEmptyConfig Default;
+		if (auto* SpawnedItem = WorldContext->SpawnActor<AItemBase>(InnerPackage.ItemClass, Default.SpawnLoc, Default.SpawnRot, Default.SpawnParams))
 		{
 			return SpawnedItem;
 		}

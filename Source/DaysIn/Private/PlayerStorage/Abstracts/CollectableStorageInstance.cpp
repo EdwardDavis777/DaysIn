@@ -9,6 +9,7 @@
 //Custom components.
 #include "PlayerStorage/Components/CollectableStorageUIComponent.h"
 #include "PlayerStorage/Components/StorageInventoryComponent.h"
+#include "PlayerStorage/Components/CollectableStorageSaveComponent.h"
 #include "CustomClasses/Components/Factory/GameplayComponentTemplate.h"
 
 
@@ -20,16 +21,36 @@ void UCollectableStorageInstance::Initialize(UWorld* WorldContext, UItemDataAsse
 	Super::Initialize(WorldContext, ItemData);
 	
 	StaticStorageData = GetData<UCollectableStorageDataAsset>();
+
 	CollectableStorageUIComponent = GameplayTemplate::CreateDefaultGameplayComponent<UCollectableStorageUIComponent>(World, this);
 	StorageInventoryComponent = GameplayTemplate::CreateDefaultGameplayComponent<UStorageInventoryComponent>(World, this);
+	StorageSaveComponent = GameplayTemplate::CreateDefaultGameplayComponent<UCollectableStorageSaveComponent>(World, this);
 }
+
+
+
+/*
+								    Virtual event functions.
+*/
+
+void UCollectableStorageInstance::PostOuterDeserialize()
+{
+	Super::PostOuterDeserialize();
+}
+
+void UCollectableStorageInstance::PostInnerDeserialize()
+{
+	Super::PostInnerDeserialize();
+	StorageSaveComponent->LoadSavedObjects(ItemRuntimeData.DeserializedInners);
+}
+
+
 
 
 
 /*
 										    Accessors.
 */
-
 TObjectPtr<UCollectableStorageDataAsset>& UCollectableStorageInstance::GetStaticStorageData()
 {
 	return StaticStorageData;

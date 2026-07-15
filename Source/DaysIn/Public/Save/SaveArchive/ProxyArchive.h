@@ -36,7 +36,7 @@ namespace Arch
     */
     template<typename TPackage>
     void SerializeObject(UObject* Object, TPackage& Package)
-    {
+    { 
         if (!Object) return;
 
         FMemoryWriter Writer(Package.ByteData);
@@ -59,7 +59,7 @@ namespace Arch
          to dump data from.
     */
     template<typename TPackage>
-    void DeSerializeObject(UObject* Object, TPackage& Package)
+    void DeSerializeObject(UObject* Object, const TPackage& Package)
     {
         if (!Object) return;
 

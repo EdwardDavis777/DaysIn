@@ -1,9 +1,13 @@
 #pragma once
-
+ 
 /*
      Defines class defaults for the run-time instance for collectable storage 
 	 objects.
 */
+
+
+//Data imports.
+#include "PlayerStorage/Data/CollectableStorageRuntimeData.h"
 
 
 //Engine imports.
@@ -19,7 +23,7 @@ class UCollectableStorageDataAsset;
 class UCollectableStorageUIComponent;
 class UUICollectableStorageInventory;
 class UStorageInventoryComponent;
-
+class UCollectableStorageSaveComponent;
 
 
 
@@ -30,6 +34,15 @@ class DAYSIN_API UCollectableStorageInstance : public UItemInstance
 	
 public:
 	virtual void Initialize(UWorld* WorldContext, UItemDataAsset* ItemData) override;
+
+  
+	/*
+	                               Virtual event functions.
+	*/
+	virtual void PostOuterDeserialize() override;
+	virtual void PostInnerDeserialize() override;
+
+
 
 
 
@@ -51,6 +64,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<UCollectableStorageDataAsset> StaticStorageData;
 
+	UPROPERTY(SaveGame)
+	FStorageRuntimeData StorageRuntimeData;
+
 
 
 	/*
@@ -58,7 +74,11 @@ private:
 	*/
 	UPROPERTY(VisibleAnywhere, Category = "Component", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCollectableStorageUIComponent> CollectableStorageUIComponent;
-
+	 
 	UPROPERTY(VisibleAnywhere, Category = "Component", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UStorageInventoryComponent> StorageInventoryComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Component", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UCollectableStorageSaveComponent> StorageSaveComponent;
+
 };

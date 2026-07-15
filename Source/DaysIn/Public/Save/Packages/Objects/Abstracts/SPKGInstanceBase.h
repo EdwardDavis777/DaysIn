@@ -22,12 +22,12 @@ class AItemBase;
 
 
 
-USTRUCT(BlueprintType)
+USTRUCT(BlueprintType) 
 struct FSPKGInstanceBase : public FSPKGBase
 {
     GENERATED_BODY()
 
-    UPROPERTY()
+    UPROPERTY(SaveGame)
     TSubclassOf<AItemBase> ItemClass;
 
     FSPKGInstanceBase()

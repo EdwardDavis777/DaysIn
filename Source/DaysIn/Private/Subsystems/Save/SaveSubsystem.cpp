@@ -9,7 +9,8 @@
 
  
  
-void USaveSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+
+void USaveSubsystem::Initialize(FSubsystemCollectionBase& Collection) 
 {
 	Super::Initialize(Collection);
 
@@ -34,4 +35,11 @@ void USaveSubsystem::LoadSaveAtBegin(USaveGame* SaveClass)
 {
 	if (!SaveClass || !SaveManager) return;
 	SaveManager->Load(SaveClass,GetWorld());
+}
+
+
+void USaveSubsystem::LoadSaveAtBegin(USaveGame* SaveClass, UObject* DependencyObject)
+{
+	if (!SaveClass || !DependencyObject || !SaveManager) return;
+	SaveManager->Load(SaveClass, GetWorld(), DependencyObject);
 }

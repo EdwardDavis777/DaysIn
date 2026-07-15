@@ -5,7 +5,7 @@
       Defines inventory gameplay functions/ functions that execute
 	  behavior for the inventorys that belong to collectable storages.
 
-*/
+*/ 
 
   
 
@@ -16,13 +16,13 @@
 
 
 
-//Forward declares.
+//Forward declares. 
 class UCollectableStorageInstance;
 class UStorageInventorySubsystem;
 class AItemBase;
 class UItemInstance;
 
-
+  
 
 UCLASS()
 class DAYSIN_API UStorageInventoryComponent : public UGameplayComponent
@@ -86,6 +86,22 @@ public:
     */
 	bool bCheckAndStore(UItemInstance* Instance, FIntPoint Position);
 
+	/*
+	    Checks if a raw item poiinter can be stored given a 2D mouse position,
+	    the function will convert the 2D position to an index, then
+	    perform storage checks. If all checks succeed, then the item will
+	    be stored at the given position.
+
+	    @param Item: pointer to a raw item you wish
+	    to store.
+
+	    @param Position: Copy to a 2D position; Note a copy is needed
+	    as it will mutate the state.
+
+	    @return TRUE/FALSE: true if the item was stored, false if the item
+	    cannot be stored for some reason.
+	*/
+	bool bCheckAndStore(AItemBase* Item, const FIntPoint& position);
 
 	/*
 		Checks if the passed item can be stored inside of this
@@ -207,6 +223,11 @@ public:
 		return Tile.X + Tile.Y * Columns;
 	}
 
+	
+	/*
+	                                  Accessors.
+	*/
+	TMap<TObjectPtr<UItemInstance>, FIntPoint>& GetStorageCache();
 private:
 
 	
@@ -218,12 +239,17 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UStorageInventorySubsystem> StorageInventorySubsystem;
+   
 
     /*
 	                               Cache components.
 	*/
 	UPROPERTY()
 	TArray<TObjectPtr<UItemInstance>> StoredItems;
+
+	UPROPERTY()
+	TMap<TObjectPtr<UItemInstance>, FIntPoint> StorageCache;
+
 
 	UPROPERTY()
 	int32 Columns = int32();

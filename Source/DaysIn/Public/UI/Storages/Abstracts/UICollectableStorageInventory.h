@@ -12,7 +12,7 @@
 */  
  
 
-//Engine imports.
+//Engine imports. 
 #include "CoreMinimal.h"
 #include "UI/Storages/Abstracts/UIGridInventoryBase.h"
 #include "UICollectableStorageInventory.generated.h"
@@ -24,7 +24,7 @@
 class UStorageUIInventoryComponent;
 class UCollectableStorageInstance;
 class UStorageInventorySubsystem;
-
+class UItemIntance;
 
 
 
@@ -37,10 +37,27 @@ public:
     virtual void NativeConstruct() override;
     virtual void InitializeGrid(int32 X, int32 Y, UObject* OwnerObject) override;
     void BindDelegates();
+    
+
+    /*
+                                  Update event functions.
+    */
+
+    /*
+         Refreshes the inventory grid when called; should only be called if the some
+         storage container has been populated, but without the construction of
+         its user interface/grid. Then of course this should be used to bridge
+         memory, with visuals.
+
+         @param StorageCache: map to some storage objects inventory
+         cache.
+    */
+    virtual void RefreshUI(TMap<TObjectPtr<UItemInstance>, FIntPoint>& StorageCache);
+
 
 
     /*
-                                 Event functions.
+                                     Event functions.
     */
     void AddItemEvent(UObject* StorageObject, UObject* AddedInstance, const FIntPoint& Position);
     virtual void HookDragOverEvent(const FGeometry& InGeometry, const FDragDropEvent& InDragEvent, UDragDropOperation* InOperation) override;
@@ -51,14 +68,14 @@ public:
 private:
 
     /*
-                                     Data.
+                                           Data.
     */
     UPROPERTY(VisibleAnywhere, Category = "Data| Runtime", meta = (AllowPrivateAccess = true))
     TObjectPtr<UCollectableStorageInstance> StorageInstance;
 
 
     /*
-                                  components.
+                                         components.
     */
     UPROPERTY()
     TObjectPtr<UStorageUIInventoryComponent> StorageUIComponent;
