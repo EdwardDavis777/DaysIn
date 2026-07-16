@@ -80,5 +80,4 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Component", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCollectableStorageSaveComponent> StorageSaveComponent;
-
 };

@@ -25,6 +25,7 @@ void USaveGenericInner::DeserializeInners(const TArray<FSPKGSubInstance>& SavePa
 {
 	if (!OuterInstance) return;
 
+	SentBackInners.Empty();
 	SentBackInners.Reserve(SavePackages.Num());
 	for (const auto& Pkg : SavePackages)
 	{
@@ -33,6 +34,7 @@ void USaveGenericInner::DeserializeInners(const TArray<FSPKGSubInstance>& SavePa
 
 		Arch::DeSerializeObject<FSPKGSubInstance>(NewItem->Instance(), Pkg);
 		SentBackInners.Emplace(NewItem,Pkg);
+
 		if (!NewItem->Instance()->GetSubInstancePackages().IsEmpty()) 
 		{
 			DeserializeInners(NewItem->Instance()->GetSubInstancePackages(),NewItem->Instance()->GetInners(), NewItem->Instance(), WorldContext);

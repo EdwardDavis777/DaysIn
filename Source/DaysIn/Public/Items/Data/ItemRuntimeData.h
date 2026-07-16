@@ -29,13 +29,34 @@ struct FItemRunTimeData
 	GENERATED_BODY()
 
 
+
+	/*
+									  Save caches.
+	*/
+
+	/*
+	    Save exposed item UI runtime data, saved during UObject
+		serialization.
+	*/
 	UPROPERTY(SaveGame)
 	FItemUIRunTimeData ItemUIRuntimeData;
 
+
+	/*
+	    Save exposed packages, populated during a save events 
+		for all item inners.
+	*/
 	UPROPERTY(SaveGame)
 	TArray<FSPKGSubInstance> SubInstancePackages;
 	
 
+
+
+
+
+	/*
+	                                 Runtime caches.
+	*/
 
 	/*
 	     Populated at runtime, used to store inner instance relationships
@@ -51,6 +72,8 @@ struct FItemRunTimeData
 	*/
 	UPROPERTY()
 	TMap<TObjectPtr<AActor>,FSPKGSubInstance> DeserializedInners;
+
+
 
 
 

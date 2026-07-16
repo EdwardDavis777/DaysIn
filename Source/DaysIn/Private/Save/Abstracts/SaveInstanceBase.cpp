@@ -27,8 +27,7 @@ USaveInstanceBase::USaveInstanceBase()
 
 void USaveInstanceBase::Save()
 {
-	if (ProxyCache.IsEmpty()) return;
-
+	SavedPackages.Empty();
 	SavedPackages.Reserve(ProxyCache.Num());
 	for (TPair<TObjectPtr<UItemInstance>, FSPKGInstanceBase>& Pkg : ProxyCache)
 	{
@@ -40,7 +39,6 @@ void USaveInstanceBase::Save()
 		}
 	}
 	SaveMethod::MakeSaveSlot(this, SaveName);
-	ProxyCache.Empty();
 }
 
 
@@ -68,7 +66,7 @@ void USaveInstanceBase::Load(UWorld* WorldContext)
 
 void USaveInstanceBase::SerializeRecursive(UItemInstance* OuterInstance)
 {
-	if (!OuterInstance || OuterInstance->GetSubInstances().IsEmpty()) return;
+	if (!OuterInstance) return;
 
 	OuterInstance->GetSubInstancePackages().Reserve(OuterInstance->GetSubInstances().Num());
 	OuterInstance->GetSubInstancePackages().Reset();
@@ -84,10 +82,10 @@ void USaveInstanceBase::SerializeRecursive(UItemInstance* OuterInstance)
 		NewSubPackage.ItemClass = OuterItem->GetItemClass();
 		NewSubPackage.Position = SubInstance.Value;
 
+		SerializeRecursive(OuterItem);
+	
 		Arch::SerializeObject(OuterItem, NewSubPackage);
 		OuterInstance->GetSubInstancePackages().Emplace(NewSubPackage);
-
-		SerializeRecursive(OuterItem);
 	}
 }
 
